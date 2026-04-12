@@ -53,16 +53,10 @@
 
     </div>
 
-    <!-- ── MESA CENTRAL (solo tapete + baza) ── -->
+    <!-- ── MESA CENTRAL: tapete limpio, solo cartas ── -->
     <div id="g4-mesa">
 
-      <!-- Triunfo: miniatura fija en esquina superior izquierda -->
-      <div id="g4-triunfo-area" style="display:none">
-        <img id="g4-triunfo-carta" src="" alt="triunfo">
-        <span id="g4-triunfo-label" class="g4-triunfo-label"></span>
-      </div>
-
-      <!-- Baza: cartas apiladas en el centro -->
+      <!-- Baza: cartas en cruz, siempre visibles -->
       <div id="g4-baza-area">
         <div class="g4-baza-slot" id="g4-baza-oeste"></div>
         <div class="g4-baza-slot" id="g4-baza-norte"></div>
@@ -70,7 +64,7 @@
         <div class="g4-baza-slot" id="g4-baza-sur"></div>
       </div>
 
-      <!-- Mensaje de estado (overlay inferior en la mesa) -->
+      <!-- Mensaje breve (overlay, solo durante 1-2s) -->
       <div id="g4-mensaje" class="mensaje" style="display:none"></div>
 
       <!-- Panel de apuestas (overlay completo sobre la mesa) -->
@@ -118,7 +112,7 @@
     </div>
 
   <!-- ══════════════════════════════════════════════
-       BARRA INFO: marcador · CANTA · contrato
+       BARRA INFO: marcador · turno+CANTA · pinta/contrato
   ═══════════════════════════════════════════════ -->
   <div id="g4-cante-bar">
 
@@ -136,14 +130,20 @@
       <span class="g4-marcador-meta">/21</span>
     </div>
 
-    <!-- Botón CANTA (centro) -->
-    <button id="g4-btn-canta" class="btn-canta-persistente canta-inactivo"
-            onclick="g4HumanoCanta()">CANTA</button>
+    <!-- Centro: turno activo + botón CANTA -->
+    <div id="g4-centro-bar">
+      <div id="g4-turno-actual">
+        <span class="g4-turno-dot turno-activo" id="g4-turno-dot-bar"></span>
+        <span id="g4-turno-nombre-bar">—</span>
+      </div>
+      <button id="g4-btn-canta" class="btn-canta-persistente canta-inactivo"
+              onclick="g4HumanoCanta()">CANTA</button>
+    </div>
 
-    <!-- Contrato + puntos de mano (derecha) -->
+    <!-- Pinta + contrato (derecha) -->
     <div id="g4-info-mano">
+      <span id="g4-pinta-label" class="g4-pinta-label"></span>
       <div id="g4-contrato-info" class="contrato-info"></div>
-      <div id="g4-puntos-mano" class="puntos-mano"></div>
     </div>
 
   </div>

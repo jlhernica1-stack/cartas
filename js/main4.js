@@ -46,7 +46,8 @@ const G4 = {
     sur: new Set(), norte: new Set(), este: new Set(), oeste: new Set(),
   },
 
-  bloqueado: false,
+  repartidor: 'oeste',   // rota cada mano: oeste→sur→este→norte→oeste…
+  bloqueado:  false,
 };
 
 // ─── Arranque ─────────────────────────────────────────────────────────────────
@@ -85,18 +86,20 @@ function iniciarMano4() {
   G4.cantesB          = 0;
   POSICIONES_4.forEach(pos => G4.cantesDeclarados[pos] = new Set());
 
-  // Sur siempre lidera la primera baza de la mano
-  G4.turno      = 'sur';
-  G4.ordenTurno = ordenBaza4('sur');
-
-  // Repartir
-  const reparto = repartir4(crearBaraja());
+  // Repartir (el repartidor recibe la última carta = triunfo)
+  const reparto = repartir4(crearBaraja(), G4.repartidor);
   POSICIONES_4.forEach(pos => G4.jugadores[pos].mano = reparto.manos[pos]);
   G4.triunfo      = reparto.triunfo;
   G4.triunfoCarta = reparto.triunfoCarta;
 
+  // El primer jugador en apostar/salir es el siguiente al repartidor
+  const primerIdx   = (POSICIONES_4.indexOf(G4.repartidor) + 1) % 4;
+  const primerJugador = POSICIONES_4[primerIdx];
+  G4.turno      = primerJugador;
+  G4.ordenTurno = ordenBaza4(primerJugador);
+
   // Actualizar UI inicial
-  g4RenderTriunfo(G4.triunfoCarta, G4.triunfo);
+  g4RenderPintaBar(G4.triunfo);
   g4RenderMarcador();
   g4RenderPuntosMano();
   g4RenderContrato(null);
@@ -415,6 +418,9 @@ function g4FinalizarMano() {
 
   g4Modal('Fin de mano', resumen, 'Siguiente mano', () => {
     g4OcultarModal();
+    // Rotar repartidor antes de la siguiente mano
+    const idxR = POSICIONES_4.indexOf(G4.repartidor);
+    G4.repartidor = POSICIONES_4[(idxR + 1) % 4];
     iniciarMano4();
   });
 }
@@ -436,6 +442,8 @@ function g4FinalizarPartida() {
     g4OcultarModal();
     G4.puntosA = 0;
     G4.puntosB = 0;
+    const idxR = POSICIONES_4.indexOf(G4.repartidor);
+    G4.repartidor = POSICIONES_4[(idxR + 1) % 4];
     iniciarMano4();
   });
 }

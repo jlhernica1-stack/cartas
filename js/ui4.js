@@ -26,7 +26,8 @@ function g4RenderManoHumano(mano, baza, triunfo, turno, bloqueado, onJugar) {
 }
 
 /**
- * Renderiza las manos de los 3 bots (solo dorsos).
+ * Renderiza las manos de los 3 bots.
+ * El repartidor muestra su carta de triunfo boca arriba.
  */
 function g4RenderManoBots() {
   ['norte', 'este', 'oeste'].forEach(pos => {
@@ -34,10 +35,12 @@ function g4RenderManoBots() {
     if (!cont) return;
     cont.innerHTML = '';
 
-    G4.jugadores[pos].mano.forEach(() => {
+    G4.jugadores[pos].mano.forEach(carta => {
       const img = document.createElement('img');
-      img.src       = 'Baraja cartas españolas/back.PNG';
-      img.className = 'carta carta-oculta';
+      const esTriunfo = (pos === G4.repartidor && carta === G4.triunfoCarta);
+      img.src       = esTriunfo ? carta.imagen : 'Baraja cartas españolas/back.PNG';
+      img.className = 'carta carta-oculta' + (esTriunfo ? ' carta-triunfo-rep' : '');
+      if (esTriunfo) img.title = getNombreCarta(carta);
       cont.appendChild(img);
     });
   });
@@ -68,22 +71,11 @@ function g4RenderBaza(baza) {
   });
 }
 
-// ─── Triunfo ──────────────────────────────────────────────────────────────────
+// ─── Pinta en la barra inferior ───────────────────────────────────────────────
 
-function g4RenderTriunfo(triunfoCarta, triunfo) {
-  const area  = document.getElementById('g4-triunfo-area');
-  const img   = document.getElementById('g4-triunfo-carta');
-  const label = document.getElementById('g4-triunfo-label');
-  if (!area) return;
-
-  if (triunfoCarta) {
-    img.src         = triunfoCarta.imagen;
-    img.title       = getNombreCarta(triunfoCarta);
-    label.textContent = `Triunfo: ${triunfo}`;
-    area.style.display = 'flex';
-  } else {
-    area.style.display = 'none';
-  }
+function g4RenderPintaBar(triunfo) {
+  const el = document.getElementById('g4-pinta-label');
+  if (el) el.textContent = triunfo ? `Pinta: ${triunfo}` : '';
 }
 
 // ─── Marcador ─────────────────────────────────────────────────────────────────
@@ -156,15 +148,24 @@ function g4RenderBotonCante(activo) {
 // ─── Indicador de turno (puntito dorado) ─────────────────────────────────────
 
 function g4ActualizarIndicadorTurno() {
+  // Dots en los paneles de jugador
   POSICIONES_4.forEach(pos => {
     const dot = document.getElementById(`turno-${pos}`);
     if (!dot) return;
-    if (G4.turno === pos) {
-      dot.classList.add('turno-activo');
-    } else {
-      dot.classList.remove('turno-activo');
-    }
+    dot.classList.toggle('turno-activo', G4.turno === pos);
   });
+
+  // Label de turno en la barra inferior
+  const label = document.getElementById('g4-turno-nombre-bar');
+  const dot   = document.getElementById('g4-turno-dot-bar');
+  if (label) {
+    label.textContent = G4.turno === 'sur'
+      ? 'Tu turno'
+      : G4.jugadores[G4.turno].nombre;
+  }
+  if (dot) {
+    dot.classList.toggle('turno-activo', true); // siempre visible
+  }
 }
 
 // ─── Nombres e iniciales ──────────────────────────────────────────────────────
@@ -193,9 +194,9 @@ function g4MostrarPanelApuesta() {
     triunfoImg.src = G4.triunfoCarta.imagen;
     triunfoImg.alt = getNombreCarta(G4.triunfoCarta);
   }
-  if (log)     log.innerHTML          = '';
-  if (botones) botones.style.display  = 'flex';
-  if (panel)   panel.style.display    = 'flex';
+  if (log)     log.innerHTML         = '';
+  if (botones) botones.style.display = 'flex';
+  if (panel)   panel.style.display   = 'flex';
 }
 
 function g4OcultarPanelApuesta() {

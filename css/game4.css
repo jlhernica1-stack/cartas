@@ -335,35 +335,21 @@
   box-shadow: 2px 4px 10px rgba(0,0,0,0.55);
 }
 
-/* ─── Triunfo: badge absoluto en esquina de la mesa ── */
+/* ─── Carta triunfo boca arriba en la mano del repartidor ── */
 
-#g4-triunfo-area {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  z-index: 5;
+.carta-triunfo-rep {
+  border: 2px solid var(--dorado) !important;
+  box-shadow: 0 0 10px rgba(200,168,75,0.6), 0 2px 6px rgba(0,0,0,0.4) !important;
 }
 
-#g4-triunfo-carta {
-  width:  30px;
-  height: 46px;
-  border-radius: 3px;
-  border: 1px solid var(--dorado);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 8px rgba(200,168,75,0.3);
-}
+/* ─── Pinta en barra info ─────────────────────────── */
 
-.g4-triunfo-label {
-  font-size: 0.55rem;
+.g4-pinta-label {
+  font-size: 0.65rem;
   color: var(--dorado);
   letter-spacing: 0.5px;
   text-transform: capitalize;
-  background: rgba(0,0,0,0.5);
-  padding: 1px 4px;
-  border-radius: 4px;
+  opacity: 0.85;
 }
 
 /* ─── Mensaje de estado: overlay en la mesa ──────── */
@@ -441,13 +427,34 @@
   letter-spacing: 0.5px;
 }
 
-/* ─── Info de contrato / puntos (barra derecha) ──── */
+/* ─── Centro de la barra: turno + CANTA ──────────── */
+
+#g4-centro-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+#g4-turno-actual {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: clamp(0.62rem, 2.2vw, 0.75rem);
+  color: rgba(255,255,255,0.8);
+}
+
+#g4-turno-nombre-bar {
+  white-space: nowrap;
+}
+
+/* ─── Info de contrato / pinta (barra derecha) ───── */
 
 #g4-info-mano {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
   overflow: hidden;
 }

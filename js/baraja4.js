@@ -6,28 +6,34 @@ const POSICIONES_4 = ['sur', 'este', 'norte', 'oeste'];
 
 /**
  * Reparte 20 cartas entre 4 jugadores (5 cada uno).
- * No hay mazo de robo: todas las cartas se entregan.
- * La última carta repartida (a Oeste, 5ª ronda) determina el triunfo.
+ * El repartidor recibe la última carta (boca arriba = triunfo).
+ * El orden de reparto empieza por el jugador siguiente al repartidor.
  *
- * @param {Array} baraja  - Baraja barajada de 20 cartas
- * @returns {{ manos, triunfo, triunfoCarta }}
+ * @param {Array}  baraja      - Baraja barajada de 20 cartas
+ * @param {string} repartidor  - Posición del repartidor ('sur'|'este'|'norte'|'oeste')
+ * @returns {{ manos, triunfo, triunfoCarta, repartidor }}
  */
-function repartir4(baraja) {
+function repartir4(baraja, repartidor = 'oeste') {
   const manos = { sur: [], este: [], norte: [], oeste: [] };
+
+  // Orden de reparto: primero el jugador a la izquierda del repartidor, el repartidor es el último
+  const idxR     = POSICIONES_4.indexOf(repartidor);
+  const dealOrder = [0, 1, 2, 3].map(i => POSICIONES_4[(idxR + 1 + i) % 4]);
 
   // 5 rondas × 4 jugadores = 20 cartas
   for (let ronda = 0; ronda < 5; ronda++) {
-    POSICIONES_4.forEach((pos, i) => {
+    dealOrder.forEach((pos, i) => {
       manos[pos].push(baraja[ronda * 4 + i]);
     });
   }
 
-  // Última carta repartida (Oeste, ronda 5) define el triunfo
-  const triunfoCarta = manos.oeste[4];
+  // La última carta del repartidor (la 5ª que recibe) es el triunfo
+  const triunfoCarta = manos[repartidor][4];
   return {
     manos,
-    triunfo: triunfoCarta.palo,
+    triunfo:      triunfoCarta.palo,
     triunfoCarta,
+    repartidor,
   };
 }
 
