@@ -335,6 +335,21 @@
   box-shadow: 2px 4px 10px rgba(0,0,0,0.55);
 }
 
+/* ─── Jugador sentado (no juega esta mano) ──────── */
+
+.g4-panel-sentado {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+
+.g4-sentado-label {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
 /* ─── Carta triunfo boca arriba en la mano del repartidor ── */
 
 .carta-triunfo-rep {

@@ -47,10 +47,11 @@ function decidirApuestaIA(mano, triunfo, apuestaRival) {
   let quiere;
   if      (bazasEsperadas >= 4.6) quiere = 'quintola';
   else if (bazasEsperadas >= 3.4) quiere = 'cuatrola';
+  else if (bazasEsperadas >= 2.5) quiere = 'solo';
   else                             quiere = 'paso';
 
-  const ORDEN = { paso: 0, cuatrola: 1, quintola: 2 };
-  const rivalNivel = apuestaRival ? ORDEN[apuestaRival] : -1;
+  const ORDEN = { paso: 0, solo: 1, cuatrola: 2, quintola: 3 };
+  const rivalNivel = apuestaRival ? (ORDEN[apuestaRival] ?? -1) : -1;
   return ORDEN[quiere] > rivalNivel ? quiere : 'paso';
 }
 

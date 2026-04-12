@@ -8,9 +8,21 @@
  * Las cartas legales tienen onclick; las ilegales se atenúan.
  */
 function g4RenderManoHumano(mano, baza, triunfo, turno, bloqueado, onJugar) {
-  const cont = document.getElementById('mano-sur');
+  const cont  = document.getElementById('mano-sur');
+  const panel = document.getElementById('g4-sur');
   if (!cont) return;
   cont.innerHTML = '';
+
+  const surSentado = (G4.parSentado === 'sur');
+  if (panel) panel.classList.toggle('g4-panel-sentado', surSentado);
+
+  if (surSentado) {
+    const lbl = document.createElement('span');
+    lbl.className   = 'g4-sentado-label';
+    lbl.textContent = 'No juegas esta mano';
+    cont.appendChild(lbl);
+    return;
+  }
 
   mano.forEach(carta => {
     const legal = !bloqueado && turno === 'sur'
@@ -28,12 +40,29 @@ function g4RenderManoHumano(mano, baza, triunfo, turno, bloqueado, onJugar) {
 /**
  * Renderiza las manos de los 3 bots.
  * El repartidor muestra su carta de triunfo boca arriba.
+ * El parSentado se muestra atenuado con etiqueta "No juega".
  */
 function g4RenderManoBots() {
   ['norte', 'este', 'oeste'].forEach(pos => {
-    const cont = document.getElementById(`mano-${pos}`);
+    const panel = document.getElementById(`g4-${pos}`);
+    const cont  = document.getElementById(`mano-${pos}`);
     if (!cont) return;
+
+    const sentado = (pos === G4.parSentado);
+
+    // Marcar el panel visualmente si el jugador está sentado
+    if (panel) panel.classList.toggle('g4-panel-sentado', sentado);
+
     cont.innerHTML = '';
+
+    if (sentado) {
+      // No muestra cartas — solo una etiqueta
+      const lbl = document.createElement('span');
+      lbl.className   = 'g4-sentado-label';
+      lbl.textContent = 'No juega';
+      cont.appendChild(lbl);
+      return;
+    }
 
     G4.jugadores[pos].mano.forEach(carta => {
       const img = document.createElement('img');

@@ -4,8 +4,8 @@
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
 const META4          = 21;
-const VALOR_AP4      = { paso: 1, cuatrola: 4, quintola: 5 };
-const ORDEN_AP4      = { paso: 0, cuatrola: 1, quintola: 2 };
+const VALOR_AP4      = { paso: 1, solo: 2, cuatrola: 4, quintola: 5 };
+const ORDEN_AP4      = { paso: 0, solo: 1, cuatrola: 2, quintola: 3 };
 
 // ─── Estado global del juego ──────────────────────────────────────────────────
 
@@ -46,8 +46,9 @@ const G4 = {
     sur: new Set(), norte: new Set(), este: new Set(), oeste: new Set(),
   },
 
-  repartidor: 'oeste',   // rota cada mano: oeste→sur→este→norte→oeste…
-  bloqueado:  false,
+  repartidor:  'oeste',  // rota: oeste→sur→este→norte→oeste…
+  parSentado:  null,     // posición del compañero que no juega (solo/cuatrola/quintola)
+  bloqueado:   false,
 };
 
 // ─── Arranque ─────────────────────────────────────────────────────────────────
@@ -72,8 +73,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ─── Inicio de mano ───────────────────────────────────────────────────────────
 
+/** Devuelve el compañero de equipo de una posición */
+function g4GetCompanero(pos) {
+  return POSICIONES_4.find(p => EQUIPOS_4[p] === EQUIPOS_4[pos] && p !== pos);
+}
+
+/**
+ * Devuelve el orden de turno para la baza, excluyendo al parSentado si lo hay.
+ */
+function g4OrdenBazaActual(primero) {
+  const orden = ordenBaza4(primero);
+  return G4.parSentado ? orden.filter(p => p !== G4.parSentado) : orden;
+}
+
 function iniciarMano4() {
   G4.bloqueado        = true;
+  G4.parSentado       = null;
   G4.bazaActual       = [];
   G4.cartasGanadasA   = [];
   G4.cartasGanadasB   = [];
@@ -93,10 +108,10 @@ function iniciarMano4() {
   G4.triunfoCarta = reparto.triunfoCarta;
 
   // El primer jugador en apostar/salir es el siguiente al repartidor
-  const primerIdx   = (POSICIONES_4.indexOf(G4.repartidor) + 1) % 4;
+  const primerIdx     = (POSICIONES_4.indexOf(G4.repartidor) + 1) % 4;
   const primerJugador = POSICIONES_4[primerIdx];
   G4.turno      = primerJugador;
-  G4.ordenTurno = ordenBaza4(primerJugador);
+  G4.ordenTurno = g4OrdenBazaActual(primerJugador);
 
   // Actualizar UI inicial
   g4RenderPintaBar(G4.triunfo);
@@ -124,8 +139,9 @@ function g4HumanoApuesta(tipo) {
   g4LogApuesta(G4.jugadores.sur.nombre, tipo);
 
   // Estado de la ronda de apuestas
-  let mejorTipo   = tipo;
-  let mejorEquipo = (tipo !== 'paso') ? 'A' : null;
+  let mejorTipo    = tipo;
+  let mejorEquipo  = (tipo !== 'paso') ? 'A' : null;
+  let mejorJugador = (tipo !== 'paso') ? 'sur' : null;
 
   // Los bots apuestan en orden: Este → Norte → Oeste
   const botsOrden = ['este', 'norte', 'oeste'];
@@ -139,13 +155,14 @@ function g4HumanoApuesta(tipo) {
 
       // ¿Este bot supera la mejor apuesta actual?
       if (apuestaBot !== 'paso' && ORDEN_AP4[apuestaBot] > ORDEN_AP4[mejorTipo]) {
-        mejorTipo   = apuestaBot;
-        mejorEquipo = EQUIPOS_4[pos];
+        mejorTipo    = apuestaBot;
+        mejorEquipo  = EQUIPOS_4[pos];
+        mejorJugador = pos;
       }
 
       // Tras el último bot, cerrar la fase de apuestas
       if (pos === 'oeste') {
-        setTimeout(() => g4CerrarApuesta(mejorTipo, mejorEquipo), 900);
+        setTimeout(() => g4CerrarApuesta(mejorTipo, mejorEquipo, mejorJugador), 900);
       }
     }, delay);
     delay += 650;
@@ -155,18 +172,22 @@ function g4HumanoApuesta(tipo) {
 /**
  * Determina el contrato final y arranca el juego.
  */
-function g4CerrarApuesta(mejorTipo, mejorEquipo) {
+function g4CerrarApuesta(mejorTipo, mejorEquipo, mejorJugador) {
   g4OcultarPanelApuesta();
 
   if (mejorTipo === 'paso' || !mejorEquipo) {
-    G4.contrato = { equipo: null, tipo: 'paso', valor: 1 };
+    G4.contrato    = { equipo: null, tipo: 'paso', valor: 1, jugador: null };
+    G4.parSentado  = null;
     g4Mensaje('Todos pasan — se juega a puntos de cartas', 'info');
   } else {
-    G4.contrato = { equipo: mejorEquipo, tipo: mejorTipo, valor: VALOR_AP4[mejorTipo] };
-    const eq = mejorEquipo === 'A'
-      ? `${G4.jugadores.sur.nombre} & ${G4.jugadores.norte.nombre}`
-      : `${G4.jugadores.este.nombre} & ${G4.jugadores.oeste.nombre}`;
-    g4Mensaje(`Equipo ${mejorEquipo} (${eq}) juega a ${mejorTipo.toUpperCase()} (${VALOR_AP4[mejorTipo]} pts)`, 'turno');
+    G4.contrato   = { equipo: mejorEquipo, tipo: mejorTipo, valor: VALOR_AP4[mejorTipo], jugador: mejorJugador };
+    G4.parSentado = g4GetCompanero(mejorJugador);   // compañero no juega
+    // Actualizar orden de turno sin el parSentado
+    G4.ordenTurno = g4OrdenBazaActual(G4.turno);
+
+    const quien = G4.jugadores[mejorJugador].nombre;
+    const comp  = G4.jugadores[G4.parSentado].nombre;
+    g4Mensaje(`${quien} juega a ${mejorTipo.toUpperCase()} · ${comp} se sienta`, 'turno');
   }
 
   g4RenderContrato(G4.contrato);
@@ -269,14 +290,16 @@ function g4JugarCartaEnPosicion(pos, carta) {
 
   g4ActualizarUI();
 
-  if (G4.bazaActual.length === 4) {
+  const cartasPorBaza = G4.parSentado ? 3 : 4;
+
+  if (G4.bazaActual.length === cartasPorBaza) {
     // Baza completa
     setTimeout(g4FinalizarBaza, 950);
   } else {
     // Avanzar al siguiente jugador en el orden de esta baza
     const idxActual = G4.ordenTurno.indexOf(pos);
     G4.turno     = G4.ordenTurno[(idxActual + 1) % G4.ordenTurno.length];
-    G4.bloqueado = false; // el turno protege al humano; no bloqueamos el arranque del bot
+    G4.bloqueado = false;
 
     g4ActualizarUI();
     g4IniciarTurno();
@@ -342,10 +365,10 @@ function g4FinalizarBaza() {
 
     // El ganador lidera la siguiente baza
     G4.turno      = posGanador;
-    G4.ordenTurno = ordenBaza4(posGanador);
+    G4.ordenTurno = g4OrdenBazaActual(posGanador);
 
-    // ¿Se acabaron las cartas?
-    if (G4.jugadores.sur.mano.length === 0) {
+    // ¿Se jugaron las 5 bazas?
+    if (G4.bazasA + G4.bazasB >= 5) {
       g4FinalizarMano();
       return;
     }
@@ -379,18 +402,32 @@ function g4FinalizarMano() {
     } else {
       textoContrato = 'Empate — sin puntos de partida';
     }
+  } else if (c.tipo === 'solo') {
+    // Solo: gana si tiene más puntos de cartas que los rivales
+    const ptsDec  = c.equipo === 'A' ? ptA : ptB;
+    const ptsRiv  = c.equipo === 'A' ? ptB : ptA;
+    const quien   = G4.jugadores[c.jugador].nombre;
+    if (ptsDec > ptsRiv) {
+      if (c.equipo === 'A') { ptPartidaA = c.valor; textoContrato = `¡${quien} cumple Solo! +${c.valor} pts`; }
+      else                  { ptPartidaB = c.valor; textoContrato = `¡${quien} cumple Solo! +${c.valor} pts`; }
+    } else {
+      if (c.equipo === 'A') { ptPartidaB = c.valor; textoContrato = `${quien} no cumple Solo — rival +${c.valor} pts`; }
+      else                  { ptPartidaA = c.valor; textoContrato = `${quien} no cumple Solo — rival +${c.valor} pts`; }
+    }
   } else {
+    // Cuatrola / Quintola: gana por número de bazas
     const bazasContratante = c.equipo === 'A' ? G4.bazasA : G4.bazasB;
     const cumplido = c.tipo === 'quintola'
       ? bazasContratante === 5
       : bazasContratante >= 4;
+    const quien = G4.jugadores[c.jugador].nombre;
 
     if (cumplido) {
-      if (c.equipo === 'A') { ptPartidaA = c.valor; textoContrato = `¡Equipo A cumple ${c.tipo}! +${c.valor} pts`; }
-      else                  { ptPartidaB = c.valor; textoContrato = `¡Equipo B cumple ${c.tipo}! +${c.valor} pts`; }
+      if (c.equipo === 'A') { ptPartidaA = c.valor; textoContrato = `¡${quien} cumple ${c.tipo}! +${c.valor} pts`; }
+      else                  { ptPartidaB = c.valor; textoContrato = `¡${quien} cumple ${c.tipo}! +${c.valor} pts`; }
     } else {
-      if (c.equipo === 'A') { ptPartidaB = c.valor; textoContrato = `Equipo A no cumple — Equipo B +${c.valor} pts`; }
-      else                  { ptPartidaA = c.valor; textoContrato = `Equipo B no cumple — Equipo A +${c.valor} pts`; }
+      if (c.equipo === 'A') { ptPartidaB = c.valor; textoContrato = `${quien} no cumple — rival +${c.valor} pts`; }
+      else                  { ptPartidaA = c.valor; textoContrato = `${quien} no cumple — rival +${c.valor} pts`; }
     }
   }
 

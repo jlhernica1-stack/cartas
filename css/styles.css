@@ -666,6 +666,14 @@ body {
   box-shadow: 0 4px 18px rgba(0,0,0,0.35);
 }
 
+.btn-apuesta-solo {
+  border-color: #60b8e0;
+}
+
+.btn-apuesta-solo:hover, .btn-apuesta-solo:active {
+  background: rgba(96,184,224,0.18);
+}
+
 .btn-apuesta-medio {
   border-color: var(--dorado);
 }
