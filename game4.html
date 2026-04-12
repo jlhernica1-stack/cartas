@@ -53,18 +53,16 @@
 
     </div>
 
-    <!-- ── MESA CENTRAL ── -->
+    <!-- ── MESA CENTRAL (solo tapete + baza) ── -->
     <div id="g4-mesa">
 
-      <!-- Triunfo (esquina superior izquierda de la mesa) -->
+      <!-- Triunfo: miniatura fija en esquina superior izquierda -->
       <div id="g4-triunfo-area" style="display:none">
         <img id="g4-triunfo-carta" src="" alt="triunfo">
-        <div class="triunfo-info">
-          <span id="g4-triunfo-label" class="g4-triunfo-label"></span>
-        </div>
+        <span id="g4-triunfo-label" class="g4-triunfo-label"></span>
       </div>
 
-      <!-- Baza actual: cartas apiladas con ligera rotación -->
+      <!-- Baza: cartas apiladas en el centro -->
       <div id="g4-baza-area">
         <div class="g4-baza-slot" id="g4-baza-oeste"></div>
         <div class="g4-baza-slot" id="g4-baza-norte"></div>
@@ -72,28 +70,10 @@
         <div class="g4-baza-slot" id="g4-baza-sur"></div>
       </div>
 
-      <!-- Marcador por equipo -->
-      <div id="g4-marcador">
-        <div class="g4-marcador-equipo">
-          <span class="g4-marcador-dot dot-a"></span>
-          <span class="g4-marcador-nombre">Equipo A</span>
-          <span class="g4-marcador-pts" id="pts-equipo-a">0</span>
-        </div>
-        <div class="g4-marcador-sep">·</div>
-        <div class="g4-marcador-equipo">
-          <span class="g4-marcador-dot dot-b"></span>
-          <span class="g4-marcador-nombre">Equipo B</span>
-          <span class="g4-marcador-pts" id="pts-equipo-b">0</span>
-        </div>
-        <div class="g4-marcador-meta">Meta: 21 pts</div>
-        <div id="g4-contrato-info" class="contrato-info"></div>
-        <div id="g4-puntos-mano" class="puntos-mano"></div>
-      </div>
-
-      <!-- Mensaje de estado (centrado sobre la mesa) -->
+      <!-- Mensaje de estado (overlay inferior en la mesa) -->
       <div id="g4-mensaje" class="mensaje" style="display:none"></div>
 
-      <!-- ── Panel de apuestas (overlay sobre la mesa) ── -->
+      <!-- Panel de apuestas (overlay completo sobre la mesa) -->
       <div id="g4-apuesta-panel" style="display:none">
         <div class="apuesta-contenido">
           <h3>¿Tu apuesta?</h3>
@@ -101,11 +81,7 @@
             <img id="g4-ap-triunfo-img" class="g4-ap-triunfo-img" src="" alt="triunfo">
             <span>Pinta: <strong id="g4-ap-triunfo"></strong></span>
           </div>
-
-          <!-- Log: muestra cómo van apostando los bots (aparece después de que el humano apostó) -->
           <div id="g4-apuesta-log" class="g4-apuesta-log"></div>
-
-          <!-- Botones del humano (se ocultan mientras los bots responden) -->
           <div class="apuesta-botones" id="g4-apuesta-botones">
             <button class="btn-apuesta" onclick="g4HumanoApuesta('paso')">
               <span class="ap-nombre">Paso</span>
@@ -142,11 +118,34 @@
     </div>
 
   <!-- ══════════════════════════════════════════════
-       BARRA CANTA
+       BARRA INFO: marcador · CANTA · contrato
   ═══════════════════════════════════════════════ -->
   <div id="g4-cante-bar">
+
+    <!-- Marcador compacto (izquierda) -->
+    <div id="g4-marcador">
+      <div class="g4-marcador-equipo">
+        <span class="g4-marcador-dot dot-a"></span>
+        <span class="g4-marcador-pts" id="pts-equipo-a">0</span>
+      </div>
+      <div class="g4-marcador-sep">—</div>
+      <div class="g4-marcador-equipo">
+        <span class="g4-marcador-dot dot-b"></span>
+        <span class="g4-marcador-pts" id="pts-equipo-b">0</span>
+      </div>
+      <span class="g4-marcador-meta">/21</span>
+    </div>
+
+    <!-- Botón CANTA (centro) -->
     <button id="g4-btn-canta" class="btn-canta-persistente canta-inactivo"
             onclick="g4HumanoCanta()">CANTA</button>
+
+    <!-- Contrato + puntos de mano (derecha) -->
+    <div id="g4-info-mano">
+      <div id="g4-contrato-info" class="contrato-info"></div>
+      <div id="g4-puntos-mano" class="puntos-mano"></div>
+    </div>
+
   </div>
 
   <!-- ══════════════════════════════════════════════
