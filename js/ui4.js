@@ -71,11 +71,11 @@ function g4RenderBaza(baza) {
   });
 }
 
-// ─── Pinta en la barra inferior ───────────────────────────────────────────────
+// ─── Pinta: se muestra en el área de contrato cuando no hay apuesta aún ───────
 
-function g4RenderPintaBar(triunfo) {
-  const el = document.getElementById('g4-pinta-label');
-  if (el) el.textContent = triunfo ? `Pinta: ${triunfo}` : '';
+function g4RenderPintaBar(_triunfo) {
+  // Muestra la pinta en el área de contrato (estado inicial antes de apostar)
+  g4RenderContrato(null);
 }
 
 // ─── Marcador ─────────────────────────────────────────────────────────────────
@@ -105,7 +105,7 @@ function g4RenderContrato(contrato) {
   if (!el) return;
 
   if (!contrato) {
-    el.textContent = '';
+    el.textContent = G4.triunfo ? `Pinta: ${G4.triunfo}` : '';
     el.className   = 'contrato-info';
     return;
   }
