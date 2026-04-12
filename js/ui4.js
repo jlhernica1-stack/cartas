@@ -182,15 +182,20 @@ function g4ActualizarNombres() {
 // ─── Panel de apuestas ────────────────────────────────────────────────────────
 
 function g4MostrarPanelApuesta() {
-  const panel    = document.getElementById('g4-apuesta-panel');
-  const triunfoEl = document.getElementById('g4-ap-triunfo');
-  const log      = document.getElementById('g4-apuesta-log');
-  const botones  = document.getElementById('g4-apuesta-botones');
+  const panel      = document.getElementById('g4-apuesta-panel');
+  const triunfoEl  = document.getElementById('g4-ap-triunfo');
+  const triunfoImg = document.getElementById('g4-ap-triunfo-img');
+  const log        = document.getElementById('g4-apuesta-log');
+  const botones    = document.getElementById('g4-apuesta-botones');
 
-  if (triunfoEl) triunfoEl.textContent = G4.triunfo ? G4.triunfo.toUpperCase() : '';
-  if (log)    log.innerHTML    = '';
-  if (botones) botones.style.display = 'flex';
-  if (panel)  panel.style.display  = 'flex';
+  if (triunfoEl)  triunfoEl.textContent = G4.triunfo ? G4.triunfo.toUpperCase() : '';
+  if (triunfoImg && G4.triunfoCarta) {
+    triunfoImg.src = G4.triunfoCarta.imagen;
+    triunfoImg.alt = getNombreCarta(G4.triunfoCarta);
+  }
+  if (log)     log.innerHTML          = '';
+  if (botones) botones.style.display  = 'flex';
+  if (panel)   panel.style.display    = 'flex';
 }
 
 function g4OcultarPanelApuesta() {
