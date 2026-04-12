@@ -66,13 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (_) { /* sessionStorage vacío o inválido: usa defaults */ }
 
   g4ActualizarNombres();
-
-  // Iniciar audio al primer gesto
-  if (typeof audioGesto === 'function') {
-    document.addEventListener('click',      audioGesto, { once: true });
-    document.addEventListener('touchstart', audioGesto, { once: true });
-  }
-
   iniciarMano4();
 });
 
