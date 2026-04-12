@@ -64,14 +64,11 @@
         </div>
       </div>
 
-      <!-- Baza actual: 4 slots posicionados en cruz -->
+      <!-- Baza actual: cartas apiladas con ligera rotación -->
       <div id="g4-baza-area">
+        <div class="g4-baza-slot" id="g4-baza-oeste"></div>
         <div class="g4-baza-slot" id="g4-baza-norte"></div>
-        <div class="g4-baza-mid-row">
-          <div class="g4-baza-slot" id="g4-baza-oeste"></div>
-          <div class="g4-baza-centro"></div>
-          <div class="g4-baza-slot" id="g4-baza-este"></div>
-        </div>
+        <div class="g4-baza-slot" id="g4-baza-este"></div>
         <div class="g4-baza-slot" id="g4-baza-sur"></div>
       </div>
 
@@ -100,7 +97,10 @@
       <div id="g4-apuesta-panel" style="display:none">
         <div class="apuesta-contenido">
           <h3>¿Tu apuesta?</h3>
-          <p>Triunfo: <strong id="g4-ap-triunfo"></strong></p>
+          <div class="g4-ap-triunfo-row">
+            <img id="g4-ap-triunfo-img" class="g4-ap-triunfo-img" src="" alt="triunfo">
+            <span>Pinta: <strong id="g4-ap-triunfo"></strong></span>
+          </div>
 
           <!-- Log: muestra cómo van apostando los bots (aparece después de que el humano apostó) -->
           <div id="g4-apuesta-log" class="g4-apuesta-log"></div>
