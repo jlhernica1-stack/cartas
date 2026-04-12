@@ -1,0 +1,794 @@
+/* styles.css — con soporte móvil completo */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --verde-mesa:   #2d6a3f;
+  --verde-oscuro: #1a4228;
+  --verde-borde:  #4a9e68;
+  --dorado:       #c8a84b;
+  --dorado-claro: #f0d080;
+  --texto-claro:  #f5f0e8;
+  --rojo-error:   #c0392b;
+  --verde-exito:  #27ae60;
+  --azul-info:    #2980b9;
+
+  /* Glassmorphism */
+  --glass-fondo:  rgba(255,255,255,0.06);
+  --glass-borde:  rgba(255,255,255,0.12);
+  --dorado-glow:  rgba(200,168,75,0.4);
+
+  --carta-w: 70px;
+  --carta-h: 107px;
+}
+
+html {
+  height: 100%;
+  /* Evita scroll horizontal */
+  overflow-x: hidden;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 15% 10%,  rgba(74,158,104,0.18) 0%, transparent 48%),
+    radial-gradient(ellipse at 85% 90%,  rgba(45,106,63,0.20)  0%, transparent 48%),
+    #0f1f13;
+  font-family: 'Georgia', serif;
+  color: var(--texto-claro);
+  min-height: 100vh;
+  min-height: 100dvh; /* dvh: descuenta la barra del navegador en móvil */
+  overflow-x: hidden;
+  /* Evita selección de texto accidental al tocar */
+  -webkit-user-select: none;
+  user-select: none;
+  /* Evita zoom en double-tap */
+  touch-action: manipulation;
+  /* Quita el flash azul/gris en tap (iOS/Android) */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Lobby ──────────────────────────────────────── */
+
+.lobby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  gap: 20px;
+  padding: 32px 20px;
+  /* Notch / home indicator en iOS */
+  padding-top:    max(32px, env(safe-area-inset-top));
+  padding-bottom: max(32px, env(safe-area-inset-bottom));
+}
+
+.lobby h1 {
+  font-size: clamp(2.6rem, 12vw, 6rem);
+  background: linear-gradient(135deg, #a07828 0%, var(--dorado-claro) 40%, #c8a84b 65%, var(--dorado-claro) 85%, #a07828 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(2px 4px 10px rgba(0,0,0,0.8));
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.lobby .subtitulo {
+  font-size: clamp(0.85rem, 3.5vw, 1.1rem);
+  color: var(--dorado-claro);
+  opacity: 0.8;
+  margin-top: -12px;
+  text-align: center;
+}
+
+.palos-deco {
+  font-size: clamp(1.2rem, 5vw, 1.6rem);
+  letter-spacing: 14px;
+  opacity: 0.55;
+  text-align: center;
+  margin-top: -4px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+}
+
+.lobby .reglas-rapidas {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--verde-borde);
+  border-radius: 12px;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  line-height: 1.8;
+  font-size: clamp(0.8rem, 3.2vw, 0.95rem);
+}
+
+.lobby .reglas-rapidas h3 {
+  color: var(--dorado);
+  margin-bottom: 10px;
+  font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+}
+
+/* ─── Cards de juegos en el lobby ───────────────── */
+
+.juego-card {
+  background: var(--glass-fondo);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-borde);
+  border-radius: 20px;
+  padding: 24px 28px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.juego-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 14px 44px rgba(0,0,0,0.55),
+    0 0 24px rgba(200,168,75,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.juego-card h2 {
+  color: var(--dorado);
+  font-size: clamp(1.3rem, 5vw, 1.7rem);
+  letter-spacing: 2px;
+}
+
+.juego-desc {
+  font-size: clamp(0.8rem, 3vw, 0.92rem);
+  line-height: 1.8;
+  opacity: 0.85;
+}
+
+.btn-secundario {
+  background: var(--verde-borde);
+  color: var(--texto-claro);
+}
+
+.btn-secundario:hover, .btn-secundario:active {
+  background: #6abf84;
+}
+
+.btn-primario {
+  background: linear-gradient(135deg, #b8941f 0%, var(--dorado-claro) 50%, #c8a84b 100%);
+  background-size: 200% 200%;
+  background-position: left center;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 12px;
+  padding: 18px 48px;
+  font-size: clamp(1rem, 4.5vw, 1.3rem);
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: background-position 0.3s ease, transform 0.12s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(200,168,75,0.4);
+  /* Zona de toque mínima recomendada */
+  min-height: 56px;
+  touch-action: manipulation;
+}
+
+.btn-primario:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(200,168,75,0.6);
+}
+
+.btn-primario:active {
+  background-position: right center;
+  transform: scale(0.97);
+  box-shadow: 0 2px 10px rgba(200,168,75,0.4);
+}
+
+/* ─── Layout del juego ───────────────────────────── */
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  /* Ocupa exactamente la pantalla sin scroll */
+  height: 100vh;
+  height: 100dvh;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 8px 10px;
+  padding-top:    max(8px, env(safe-area-inset-top));
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  gap: 6px;
+}
+
+/* ─── Panel IA (arriba) ──────────────────────────── */
+
+#panel-ia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 14px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.panel-nombre {
+  font-size: clamp(0.75rem, 3vw, 0.9rem);
+  color: var(--dorado);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-nombre .puntos-panel {
+  background: linear-gradient(135deg, rgba(200,168,75,0.22), rgba(200,168,75,0.10));
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(200,168,75,0.45);
+  box-shadow: 0 0 8px rgba(200,168,75,0.18);
+}
+
+/* ─── Mesa central ───────────────────────────────── */
+
+#mesa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background:
+    radial-gradient(ellipse at center, #3d9058 0%, var(--verde-mesa) 50%, #1e5030 100%);
+  border-radius: 20px;
+  border: 2px solid rgba(74,158,104,0.55);
+  padding: 14px;
+  box-shadow:
+    inset 0 2px 24px rgba(0,0,0,0.35),
+    inset 0 0 60px rgba(0,0,0,0.2),
+    0 4px 20px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,255,255,0.04);
+  /* La mesa crece para llenar el espacio disponible */
+  flex: 1;
+  min-height: 0; /* permite que flex reduzca correctamente */
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── Triunfo ────────────────────────────────────── */
+
+#triunfo-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+#triunfo-carta {
+  width: var(--carta-w);
+  height: var(--carta-h);
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 14px rgba(200,168,75,0.35);
+  transform: rotate(15deg);
+  border: 2px solid var(--dorado);
+}
+
+.triunfo-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+#triunfo-label {
+  font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+  color: var(--dorado);
+  text-transform: capitalize;
+  letter-spacing: 1px;
+}
+
+.mazo-contador {
+  font-size: clamp(0.62rem, 2vw, 0.72rem);
+  color: var(--texto-claro);
+  opacity: 0.75;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Baza actual ────────────────────────────────── */
+
+#baza-area {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  min-height: 120px;
+}
+
+.carta-baza {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  animation: cartaJugada 0.25s ease;
+}
+
+.carta-baza-humano { transform: translateY(-6px); }
+.carta-baza-ia     { transform: translateY(6px);  }
+
+.baza-label {
+  font-size: 0.72rem;
+  color: var(--dorado-claro);
+  opacity: 0.8;
+}
+
+@keyframes cartaJugada {
+  from { opacity: 0; transform: scale(0.5) translateY(16px); }
+  to   { opacity: 1; }
+}
+
+/* ─── Marcador ───────────────────────────────────── */
+
+#marcador {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  font-size: clamp(0.75rem, 2.8vw, 0.85rem);
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.32);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 10px 16px;
+  border: 1px solid rgba(74,158,104,0.28);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+#marcador h4 {
+  color: var(--dorado);
+  font-size: clamp(0.65rem, 2.5vw, 0.8rem);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.marcador-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+}
+
+.marcador-valor {
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-weight: bold;
+  color: var(--dorado-claro);
+}
+
+.marcador-meta {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ─── Mensaje de estado ──────────────────────────── */
+
+#mensaje-estado {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.80);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-size: clamp(0.85rem, 3.5vw, 1.05rem);
+  /* Permite ajuste en pantalla estrecha */
+  white-space: normal;
+  text-align: center;
+  max-width: 80%;
+  pointer-events: none;
+  z-index: 10;
+  display: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.mensaje-turno  { border: 2px solid var(--verde-exito); color: #7edc8f; }
+.mensaje-exito  { border: 2px solid var(--verde-exito); color: #7edc8f; }
+.mensaje-malo   { border: 2px solid var(--rojo-error);  color: #f08080; }
+.mensaje-error  { border: 2px solid var(--rojo-error);  color: #f08080; }
+.mensaje-info   { border: 2px solid var(--azul-info);   color: #90c8f0; }
+
+/* ─── Panel jugador (abajo) ──────────────────────── */
+
+#panel-humano {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 14px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ─── Cartas ─────────────────────────────────────── */
+
+.mano-cartas {
+  display: flex;
+  justify-content: center;
+  /* En pantallas muy pequeñas las cartas se solapan antes de hacer wrap */
+  flex-wrap: nowrap;
+  gap: 6px;
+  padding: 4px 2px;
+}
+
+.carta {
+  width: var(--carta-w);
+  height: var(--carta-h);
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: block;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.carta-oculta {
+  cursor: default;
+  opacity: 0.9;
+}
+
+.carta-jugable {
+  cursor: pointer;
+  border: 2px solid transparent;
+  /* Asegura zona de toque suficiente */
+  touch-action: manipulation;
+}
+
+/* Efecto hover — solo en dispositivos con puntero */
+@media (hover: hover) {
+  .carta-jugable:hover {
+    transform: translateY(-16px) scale(1.06);
+    box-shadow:
+      0 10px 22px rgba(0,0,0,0.6),
+      0 0 18px rgba(200,168,75,0.55);
+    border: 2px solid var(--dorado);
+    z-index: 5;
+    position: relative;
+  }
+}
+
+/* Efecto tap en móvil */
+.carta-jugable:active {
+  transform: translateY(-10px) scale(1.04);
+  border: 2px solid var(--dorado);
+  z-index: 5;
+  position: relative;
+}
+
+.carta-no-legal {
+  cursor: not-allowed;
+  filter: brightness(0.5) saturate(0.4);
+}
+
+/* ─── Contrato e info de mano ────────────────────── */
+
+.contrato-info {
+  font-size: clamp(0.68rem, 2.5vw, 0.78rem);
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-align: center;
+  min-height: 1.4em;
+  transition: background 0.3s;
+}
+
+.contrato-paso     { color: #90c8f0; border: 1px solid #2980b9; }
+.contrato-cuatrola { color: #f0d080; border: 1px solid #c8a84b; }
+.contrato-quintola { color: #ff9f60; border: 1px solid #e07030; }
+
+.puntos-mano {
+  font-size: clamp(0.65rem, 2.3vw, 0.75rem);
+  opacity: 0.65;
+  text-align: center;
+  min-height: 1.2em;
+}
+
+/* ─── Botón de audio (fijo esquina superior derecha) */
+
+.btn-audio {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 200;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-audio:hover, .btn-audio:active {
+  background: rgba(0,0,0,0.7);
+}
+
+/* ─── Barra del botón CANTA ──────────────────────── */
+
+#cante-bar {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 2px 0;
+}
+
+.btn-canta-persistente {
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  letter-spacing: 3px;
+  font-size: clamp(0.85rem, 3.5vw, 1rem);
+  border-radius: 20px;
+  padding: 8px 28px;
+  min-height: 40px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.2s;
+  border: 2px solid;
+}
+
+/* Inactivo: discreto, no interrumpe */
+.canta-inactivo {
+  background: transparent;
+  color: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.12);
+  cursor: default;
+}
+
+/* Activo: llama la atención */
+.canta-activo {
+  background: linear-gradient(135deg, var(--dorado) 0%, var(--dorado-claro) 50%, var(--dorado) 100%);
+  background-size: 200% 200%;
+  color: #1a1a1a;
+  border-color: var(--dorado-claro);
+  animation: pulsar-canta 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes pulsar-canta {
+  from {
+    box-shadow: 0 0 6px rgba(200,168,75,0.4);
+    background-position: left center;
+  }
+  to {
+    box-shadow: 0 0 26px rgba(200,168,75,0.95), 0 0 8px rgba(240,208,128,0.6);
+    background-position: right center;
+  }
+}
+
+.canta-activo:hover, .canta-activo:active {
+  background: var(--dorado-claro);
+  transform: scale(1.05);
+}
+
+/* ─── Panel de apuestas (overlay sobre la mesa) ───── */
+
+#apuesta-panel {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 22, 14, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 16px;
+}
+
+.apuesta-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.apuesta-contenido h3 {
+  color: var(--dorado);
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.apuesta-contenido p {
+  font-size: clamp(0.85rem, 3vw, 1rem);
+  opacity: 0.85;
+}
+
+.apuesta-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-apuesta {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 14px;
+  padding: 12px 16px;
+  color: var(--texto-claro);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  width: 100%;
+  touch-action: manipulation;
+  transition: background 0.2s, border-color 0.2s, transform 0.12s, box-shadow 0.2s;
+  min-height: 56px;
+}
+
+.btn-apuesta:hover, .btn-apuesta:active {
+  background: rgba(255,255,255,0.12);
+  transform: scale(1.02);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+}
+
+.btn-apuesta-medio {
+  border-color: var(--dorado);
+}
+
+.btn-apuesta-medio:hover, .btn-apuesta-medio:active {
+  background: rgba(200,168,75,0.2);
+}
+
+.btn-apuesta-alto {
+  border-color: #e07030;
+}
+
+.btn-apuesta-alto:hover, .btn-apuesta-alto:active {
+  background: rgba(224,112,48,0.2);
+}
+
+.ap-nombre {
+  font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+  font-weight: bold;
+  font-family: 'Georgia', serif;
+}
+
+.ap-desc {
+  font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+  opacity: 0.65;
+}
+
+/* ─── Modal ──────────────────────────────────────── */
+
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal-contenido {
+  background: rgba(12,28,18,0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(200,168,75,0.38);
+  border-radius: 22px;
+  padding: 32px 28px;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.8),
+    0 0 32px rgba(200,168,75,0.13),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.modal-contenido h2 {
+  color: var(--dorado);
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  margin-bottom: 12px;
+}
+
+.modal-contenido p {
+  margin-bottom: 22px;
+  line-height: 1.7;
+  opacity: 0.9;
+  font-size: clamp(0.85rem, 3.2vw, 1rem);
+}
+
+/* ─── Pantallas muy pequeñas (≤ 380px, iPhone SE) ── */
+
+@media (max-width: 380px) {
+  :root {
+    --carta-w: 56px;
+    --carta-h: 86px;
+  }
+
+  .mano-cartas {
+    gap: 4px;
+  }
+}
+
+/* ─── Pantalla apaisada (landscape) ─────────────── */
+
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --carta-w: 52px;
+    --carta-h: 80px;
+  }
+
+  #game-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
+  #panel-ia, #panel-humano {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  #mesa {
+    flex: 1;
+    gap: 10px;
+    padding: 8px;
+  }
+}
+
+/* ─── Tableta / escritorio (≥ 700px) ────────────── */
+
+@media (min-width: 700px) {
+  :root {
+    --carta-w: 76px;
+    --carta-h: 116px;
+  }
+
+  #mesa {
+    gap: 28px;
+    padding: 24px;
+  }
+
+  .mano-cartas {
+    gap: 10px;
+  }
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinquillo</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/cinquillo.css">
+</head>
+<body>
+
+<div id="cq-container">
+
+  <button id="btn-audio" class="btn-audio" onclick="audioToggle()">🔊</button>
+
+  <!-- ── Cabecera ── -->
+  <div id="cq-header">
+    <a href="index.html" class="cq-volver">← Inicio</a>
+    <h1 class="cq-titulo">Cinquillo</h1>
+    <div id="cq-marcador">
+      <span>Tú: <strong id="cq-pts-humano">0</strong></span>
+      <span id="cq-meta">Meta: 20 pts</span>
+      <span>IA: <strong id="cq-pts-ia">0</strong></span>
+    </div>
+  </div>
+
+  <!-- ── Mano IA ── -->
+  <div id="cq-panel-ia">
+    <span class="cq-panel-label">IA · <span id="cq-num-ia">0</span> cartas</span>
+    <div id="cq-mano-ia" class="cq-mano"></div>
+  </div>
+
+  <!-- ── Tablero ── -->
+  <div id="cq-tablero">
+
+    <div id="cq-mensaje" class="cq-mensaje" style="display:none"></div>
+
+    <div class="cq-board">
+      <!-- Cabecera de columnas (valores) -->
+      <div class="cq-col-headers">
+        <div class="cq-col-h">A</div>
+        <div class="cq-col-h">2</div>
+        <div class="cq-col-h">3</div>
+        <div class="cq-col-h">4</div>
+        <div class="cq-col-h cq-col-5">5</div>
+        <div class="cq-col-h">6</div>
+        <div class="cq-col-h">7</div>
+        <div class="cq-col-h">S</div>
+        <div class="cq-col-h">C</div>
+        <div class="cq-col-h">R</div>
+      </div>
+
+      <!-- Filas de palos -->
+      <div class="cq-row">
+        <div class="cq-row-label cq-label-oros">Oros</div>
+        <div class="cq-slots" id="row-oros"></div>
+      </div>
+      <div class="cq-row">
+        <div class="cq-row-label cq-label-copas">Copas</div>
+        <div class="cq-slots" id="row-copas"></div>
+      </div>
+      <div class="cq-row">
+        <div class="cq-row-label cq-label-espadas">Esp.</div>
+        <div class="cq-slots" id="row-espadas"></div>
+      </div>
+      <div class="cq-row">
+        <div class="cq-row-label cq-label-bastos">Bast.</div>
+        <div class="cq-slots" id="row-bastos"></div>
+      </div>
+    </div>
+
+  </div><!-- /tablero -->
+
+  <!-- ── Mano jugador ── -->
+  <div id="cq-panel-humano">
+    <div id="cq-mano-humano" class="cq-mano"></div>
+    <span class="cq-panel-label">Tú · <span id="cq-num-humano">0</span> cartas</span>
+  </div>
+
+</div><!-- /cq-container -->
+
+<!-- Modal -->
+<div id="cq-modal">
+  <div class="modal-contenido">
+    <h2 id="cq-modal-titulo"></h2>
+    <p id="cq-modal-texto"></p>
+    <button class="btn-primario" id="cq-modal-btn"></button>
+  </div>
+</div>
+
+<script src="js/audio.js"></script>
+<script src="js/cq_baraja.js"></script>
+<script src="js/cq_ia.js"></script>
+<script src="js/cq_ui.js"></script>
+<script src="js/cq_main.js"></script>
+
+</body>
+</html>

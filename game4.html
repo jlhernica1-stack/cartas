@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuatrola · 4 Jugadores</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/game4.css">
+</head>
+<body>
+
+<div id="g4-container">
+
+  <button id="btn-audio" class="btn-audio" onclick="audioToggle()">🔊</button>
+
+  <!-- ══════════════════════════════════════════════
+       NORTE  (compañero del jugador — arriba)
+  ═══════════════════════════════════════════════ -->
+  <div id="g4-norte" class="g4-panel">
+
+    <div class="g4-jugador-info">
+      <!-- AVATAR: slot listo para imagen futura -->
+      <div class="g4-avatar" id="avatar-norte">
+        <span class="g4-avatar-inicial" id="inicial-norte">N</span>
+        <!-- Futura imagen: <img id="img-avatar-norte" class="g4-avatar-img" src="" alt=""> -->
+      </div>
+      <div class="g4-jugador-datos">
+        <span class="g4-nombre" id="nombre-norte">Norte</span>
+        <span class="g4-equipo-label g4-equipo-a">Equipo A · Compañero</span>
+      </div>
+    </div>
+
+    <div id="mano-norte" class="g4-mano g4-mano-horizontal"></div>
+
+    <!-- Indicador de turno -->
+    <div id="turno-norte" class="g4-turno-dot"></div>
+
+  </div>
+
+  <!-- ── OESTE (rival — izquierda) ── -->
+    <div id="g4-oeste" class="g4-panel g4-panel-lateral">
+
+      <div class="g4-jugador-info g4-info-lateral">
+        <div class="g4-avatar" id="avatar-oeste">
+          <span class="g4-avatar-inicial" id="inicial-oeste">O</span>
+        </div>
+        <span class="g4-nombre" id="nombre-oeste">Oeste</span>
+        <span class="g4-equipo-label g4-equipo-b">Equipo B</span>
+      </div>
+
+      <div id="mano-oeste" class="g4-mano g4-mano-vertical"></div>
+      <div id="turno-oeste" class="g4-turno-dot"></div>
+
+    </div>
+
+    <!-- ── MESA CENTRAL ── -->
+    <div id="g4-mesa">
+
+      <!-- Triunfo (esquina superior izquierda de la mesa) -->
+      <div id="g4-triunfo-area" style="display:none">
+        <img id="g4-triunfo-carta" src="" alt="triunfo">
+        <div class="triunfo-info">
+          <span id="g4-triunfo-label" class="g4-triunfo-label"></span>
+        </div>
+      </div>
+
+      <!-- Baza actual: 4 slots posicionados en cruz -->
+      <div id="g4-baza-area">
+        <div class="g4-baza-slot" id="g4-baza-norte"></div>
+        <div class="g4-baza-mid-row">
+          <div class="g4-baza-slot" id="g4-baza-oeste"></div>
+          <div class="g4-baza-centro"></div>
+          <div class="g4-baza-slot" id="g4-baza-este"></div>
+        </div>
+        <div class="g4-baza-slot" id="g4-baza-sur"></div>
+      </div>
+
+      <!-- Marcador por equipo -->
+      <div id="g4-marcador">
+        <div class="g4-marcador-equipo">
+          <span class="g4-marcador-dot dot-a"></span>
+          <span class="g4-marcador-nombre">Equipo A</span>
+          <span class="g4-marcador-pts" id="pts-equipo-a">0</span>
+        </div>
+        <div class="g4-marcador-sep">·</div>
+        <div class="g4-marcador-equipo">
+          <span class="g4-marcador-dot dot-b"></span>
+          <span class="g4-marcador-nombre">Equipo B</span>
+          <span class="g4-marcador-pts" id="pts-equipo-b">0</span>
+        </div>
+        <div class="g4-marcador-meta">Meta: 21 pts</div>
+        <div id="g4-contrato-info" class="contrato-info"></div>
+        <div id="g4-puntos-mano" class="puntos-mano"></div>
+      </div>
+
+      <!-- Mensaje de estado (centrado sobre la mesa) -->
+      <div id="g4-mensaje" class="mensaje" style="display:none"></div>
+
+      <!-- ── Panel de apuestas (overlay sobre la mesa) ── -->
+      <div id="g4-apuesta-panel" style="display:none">
+        <div class="apuesta-contenido">
+          <h3>¿Tu apuesta?</h3>
+          <p>Triunfo: <strong id="g4-ap-triunfo"></strong></p>
+
+          <!-- Log: muestra cómo van apostando los bots (aparece después de que el humano apostó) -->
+          <div id="g4-apuesta-log" class="g4-apuesta-log"></div>
+
+          <!-- Botones del humano (se ocultan mientras los bots responden) -->
+          <div class="apuesta-botones" id="g4-apuesta-botones">
+            <button class="btn-apuesta" onclick="g4HumanoApuesta('paso')">
+              <span class="ap-nombre">Paso</span>
+              <span class="ap-desc">Ganar más puntos de cartas</span>
+            </button>
+            <button class="btn-apuesta btn-apuesta-medio" onclick="g4HumanoApuesta('cuatrola')">
+              <span class="ap-nombre">Cuatrola</span>
+              <span class="ap-desc">Tu equipo gana 4 ó 5 bazas · 4 pts</span>
+            </button>
+            <button class="btn-apuesta btn-apuesta-alto" onclick="g4HumanoApuesta('quintola')">
+              <span class="ap-nombre">Quintola</span>
+              <span class="ap-desc">Tu equipo gana las 5 bazas · 5 pts</span>
+            </button>
+          </div>
+        </div>
+      </div><!-- /apuesta-panel -->
+
+    </div><!-- /g4-mesa -->
+
+    <!-- ── ESTE (rival — derecha) ── -->
+    <div id="g4-este" class="g4-panel g4-panel-lateral">
+
+      <div id="mano-este" class="g4-mano g4-mano-vertical"></div>
+      <div id="turno-este" class="g4-turno-dot"></div>
+
+      <div class="g4-jugador-info g4-info-lateral">
+        <div class="g4-avatar" id="avatar-este">
+          <span class="g4-avatar-inicial" id="inicial-este">E</span>
+        </div>
+        <span class="g4-nombre" id="nombre-este">Este</span>
+        <span class="g4-equipo-label g4-equipo-b">Equipo B</span>
+      </div>
+
+    </div>
+
+  <!-- ══════════════════════════════════════════════
+       BARRA CANTA
+  ═══════════════════════════════════════════════ -->
+  <div id="g4-cante-bar">
+    <button id="g4-btn-canta" class="btn-canta-persistente canta-inactivo"
+            onclick="g4HumanoCanta()">CANTA</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SUR  (tú — abajo)
+  ═══════════════════════════════════════════════ -->
+  <div id="g4-sur" class="g4-panel">
+
+    <div id="mano-sur" class="g4-mano g4-mano-horizontal"></div>
+
+    <div class="g4-jugador-info">
+      <!-- AVATAR: slot listo para imagen futura -->
+      <div class="g4-avatar g4-avatar-tu" id="avatar-sur">
+        <span class="g4-avatar-inicial" id="inicial-sur">J</span>
+        <!-- Futura imagen: <img id="img-avatar-sur" class="g4-avatar-img" src="" alt=""> -->
+        <!-- Futura edición: <label class="g4-avatar-edit" for="input-avatar-sur">✎</label>
+             <input type="file" id="input-avatar-sur" accept="image/*" style="display:none"> -->
+      </div>
+      <div class="g4-jugador-datos">
+        <span class="g4-nombre g4-nombre-tu" id="nombre-sur">Tú</span>
+        <span class="g4-equipo-label g4-equipo-a">Equipo A · Tu equipo</span>
+      </div>
+      <div id="turno-sur" class="g4-turno-dot"></div>
+    </div>
+
+  </div>
+
+</div><!-- /g4-container -->
+
+<!-- ══════════════════════════════════════════════
+     MODAL fin de mano / fin de partida
+═══════════════════════════════════════════════ -->
+<div id="g4-modal" style="display:none">
+  <div class="modal-contenido">
+    <h2 id="g4-modal-titulo"></h2>
+    <p id="g4-modal-texto"></p>
+    <button class="btn-primario" id="g4-modal-btn"></button>
+  </div>
+</div>
+
+<!-- ─── Scripts ────────────────────────────────────────────────────────────── -->
+<script src="js/audio.js"></script>
+<script src="js/baraja.js"></script>   <!-- PALOS, VALORES, JERARQUIA, crearBaraja, nuevaGana… -->
+<script src="js/reglas.js"></script>   <!-- esJugadaLegal, ganadorActualBaza, detectarCantesDisponibles… -->
+<script src="js/ia.js"></script>       <!-- decidirApuestaIA, decidirCartaIA… -->
+<script src="js/baraja4.js"></script>  <!-- repartir4, POSICIONES_4 -->
+<script src="js/reglas4.js"></script>  <!-- EQUIPOS_4, calcularPuntosEquipo… -->
+<script src="js/ia4.js"></script>      <!-- decidirApuesta4, decidirCarta4 -->
+<script src="js/ui4.js"></script>
+<script src="js/main4.js"></script>
+
+</body>
+</html>

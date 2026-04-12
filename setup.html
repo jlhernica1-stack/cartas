@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Partida · Cuatrola</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/setup.css">
+</head>
+<body>
+
+<div class="setup-container">
+
+  <a href="index.html" class="btn-volver">← Inicio</a>
+
+  <h1 class="setup-titulo">Cuatrola</h1>
+  <p class="setup-subtitulo">Elige tus rivales</p>
+
+  <!-- ─── Mesa visual con 4 asientos ─── -->
+  <div class="setup-mesa">
+
+    <!-- Norte (compañero) -->
+    <div class="asiento asiento-norte" data-pos="norte">
+      <div class="avatar-ring" id="avatar-norte">
+        <span class="avatar-inicial" id="inicial-norte">B</span>
+        <!-- AVATAR FUTURO: <img id="img-avatar-norte" src="" alt="" style="display:none"> -->
+      </div>
+      <input class="asiento-nombre" id="nombre-norte" type="text"
+             value="Bot Norte" maxlength="12" data-pos="norte" autocomplete="off">
+      <span class="asiento-badge badge-bot">Bot IA</span>
+      <span class="asiento-equipo equipo-a-txt">Equipo A</span>
+    </div>
+
+    <!-- Fila media: Oeste + Tapete + Este -->
+    <div class="setup-fila-media">
+
+      <!-- Oeste (rival) -->
+      <div class="asiento asiento-oeste" data-pos="oeste">
+        <div class="avatar-ring" id="avatar-oeste">
+          <span class="avatar-inicial" id="inicial-oeste">B</span>
+        </div>
+        <input class="asiento-nombre" id="nombre-oeste" type="text"
+               value="Bot Oeste" maxlength="12" data-pos="oeste" autocomplete="off">
+        <span class="asiento-badge badge-bot">Bot IA</span>
+        <span class="asiento-equipo equipo-b-txt">Equipo B</span>
+      </div>
+
+      <!-- Tapete circular -->
+      <div class="setup-tapete">
+        <div class="setup-tapete-inner">
+          <span class="tapete-icono">⚔</span>
+          <div class="setup-equipo-lineas">
+            <div class="linea-equipo linea-a"></div>
+            <div class="linea-equipo linea-b"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Este (rival) -->
+      <div class="asiento asiento-este" data-pos="este">
+        <div class="avatar-ring" id="avatar-este">
+          <span class="avatar-inicial" id="inicial-este">B</span>
+        </div>
+        <input class="asiento-nombre" id="nombre-este" type="text"
+               value="Bot Este" maxlength="12" data-pos="este" autocomplete="off">
+        <span class="asiento-badge badge-bot">Bot IA</span>
+        <span class="asiento-equipo equipo-b-txt">Equipo B</span>
+      </div>
+
+    </div><!-- /fila-media -->
+
+    <!-- Sur (tú) -->
+    <div class="asiento asiento-sur" data-pos="sur">
+      <span class="asiento-equipo equipo-a-txt">Equipo A</span>
+      <span class="asiento-badge badge-tu">Tú</span>
+      <div class="avatar-ring avatar-ring-tu" id="avatar-sur">
+        <span class="avatar-inicial" id="inicial-sur">J</span>
+        <!-- AVATAR FUTURO: <img id="img-avatar-sur" src="" alt="" style="display:none"> -->
+        <!-- AVATAR FUTURO: <label class="avatar-edit-btn" for="input-avatar-sur">✎</label> -->
+        <!-- AVATAR FUTURO: <input type="file" id="input-avatar-sur" accept="image/*" style="display:none"> -->
+      </div>
+      <input class="asiento-nombre asiento-nombre-tu" id="nombre-sur" type="text"
+             value="Jugador" maxlength="12" autocomplete="off">
+    </div>
+
+  </div><!-- /setup-mesa -->
+
+  <!-- Info equipos -->
+  <div class="equipos-resumen">
+    <div class="equipo-chip equipo-chip-a">
+      <span class="equipo-dot dot-a"></span>
+      <span>A: <strong id="label-sur">Jugador</strong> + <strong id="label-norte">Bot Norte</strong></span>
+    </div>
+    <span class="equipo-vs">vs</span>
+    <div class="equipo-chip equipo-chip-b">
+      <span class="equipo-dot dot-b"></span>
+      <span>B: <strong id="label-este">Bot Este</strong> + <strong id="label-oeste">Bot Oeste</strong></span>
+    </div>
+  </div>
+
+  <button class="btn-primario btn-jugar" id="btn-jugar">▶ Jugar</button>
+
+</div><!-- /setup-container -->
+
+<script src="js/audio.js"></script>
+<script>
+  // ─── Actualizar iniciales e icono al escribir ─────────────────────────────
+
+  function actualizarAvatar(pos, valor) {
+    const el = document.getElementById(`inicial-${pos}`);
+    if (el) el.textContent = (valor || pos[0]).charAt(0).toUpperCase();
+  }
+
+  function actualizarLabel(pos, valor) {
+    const el = document.getElementById(`label-${pos}`);
+    if (el) el.textContent = valor || `Bot ${pos}`;
+  }
+
+  // Nombre del jugador (Sur)
+  const inputSur = document.getElementById('nombre-sur');
+  inputSur.addEventListener('input', () => {
+    actualizarAvatar('sur', inputSur.value);
+    actualizarLabel('sur', inputSur.value || 'Jugador');
+  });
+
+  // Nombres de los bots
+  ['norte', 'este', 'oeste'].forEach(pos => {
+    const input = document.getElementById(`nombre-${pos}`);
+    input.addEventListener('input', () => {
+      actualizarAvatar(pos, input.value);
+      actualizarLabel(pos, input.value);
+    });
+  });
+
+  // ─── Guardar en localStorage el nombre del jugador ───────────────────────
+
+  const nombreGuardado = localStorage.getItem('cuatrola-nombre-jugador');
+  if (nombreGuardado) {
+    inputSur.value = nombreGuardado;
+    actualizarAvatar('sur', nombreGuardado);
+    actualizarLabel('sur', nombreGuardado);
+  }
+
+  // ─── Arrancar audio al primer gesto ──────────────────────────────────────
+
+  document.addEventListener('click', audioGesto, { once: true });
+  document.addEventListener('touchstart', audioGesto, { once: true });
+
+  // ─── Ir a la partida ─────────────────────────────────────────────────────
+
+  document.getElementById('btn-jugar').addEventListener('click', () => {
+    const config = {
+      jugadores: {
+        sur:   { nombre: inputSur.value.trim() || 'Jugador', tipo: 'humano' },
+        norte: { nombre: document.getElementById('nombre-norte').value.trim() || 'Bot Norte', tipo: 'bot' },
+        este:  { nombre: document.getElementById('nombre-este').value.trim()  || 'Bot Este',  tipo: 'bot' },
+        oeste: { nombre: document.getElementById('nombre-oeste').value.trim() || 'Bot Oeste', tipo: 'bot' },
+      }
+    };
+
+    // Guardar nombre del jugador para próximas partidas
+    localStorage.setItem('cuatrola-nombre-jugador', config.jugadores.sur.nombre);
+
+    sessionStorage.setItem('cuatrola4-config', JSON.stringify(config));
+    location.href = 'game4.html';
+  });
+</script>
+
+</body>
+</html>

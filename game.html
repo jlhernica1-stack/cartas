@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuatrola</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="game-container">
+
+  <button id="btn-audio" class="btn-audio" onclick="audioToggle()">🔊</button>
+
+  <!-- ── Panel IA (arriba) ── -->
+  <div id="panel-ia">
+    <div class="panel-nombre">
+      IA
+      <span class="puntos-panel"><span id="puntos-ia">0</span> pts</span>
+    </div>
+    <div id="mano-ia" class="mano-cartas"></div>
+  </div>
+
+  <!-- ── Mesa central ── -->
+  <div id="mesa">
+
+    <!-- Triunfo -->
+    <div id="triunfo-area" style="display:none">
+      <img id="triunfo-carta" src="" alt="triunfo">
+      <div class="triunfo-info">
+        <span id="triunfo-label"></span>
+        <span id="mazo-contador" class="mazo-contador"></span>
+      </div>
+    </div>
+
+    <!-- Baza actual -->
+    <div id="baza-area"></div>
+
+    <!-- Marcador -->
+    <div id="marcador">
+      <h4>Puntos de partida</h4>
+      <div class="marcador-fila">
+        <div style="text-align:center">
+          <div class="marcador-valor" id="puntos-humano-marcador">0</div>
+          <div>Tú</div>
+        </div>
+        <div style="text-align:center; opacity:0.5; align-self:center">vs</div>
+        <div style="text-align:center">
+          <div class="marcador-valor" id="puntos-ia-marcador">0</div>
+          <div>IA</div>
+        </div>
+      </div>
+      <div class="marcador-meta">Meta: 21 puntos</div>
+      <div id="contrato-info" class="contrato-info"></div>
+      <div id="puntos-mano" class="puntos-mano"></div>
+    </div>
+
+    <!-- Mensaje de estado -->
+    <div id="mensaje-estado" class="mensaje"></div>
+
+
+    <!-- Panel de apuestas (overlay sobre la mesa) -->
+    <div id="apuesta-panel" style="display:none">
+      <div class="apuesta-contenido">
+        <h3>¿Tu apuesta?</h3>
+        <p>Triunfo: <strong id="ap-triunfo"></strong></p>
+        <div class="apuesta-botones">
+
+          <button class="btn-apuesta" onclick="humanoApuesta('paso')">
+            <span class="ap-nombre">Paso</span>
+            <span class="ap-desc">Ganar más puntos de cartas · vale 1 pt</span>
+          </button>
+
+          <button class="btn-apuesta btn-apuesta-medio" onclick="humanoApuesta('cuatrola')">
+            <span class="ap-nombre">Cuatrola</span>
+            <span class="ap-desc">Ganar 4 ó 5 bazas · vale 4 pts</span>
+          </button>
+
+          <button class="btn-apuesta btn-apuesta-alto" onclick="humanoApuesta('quintola')">
+            <span class="ap-nombre">Quintola</span>
+            <span class="ap-desc">Ganar las 5 bazas · vale 5 pts</span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /mesa -->
+
+  <!-- ── Botón de cante (siempre visible) ── -->
+  <div id="cante-bar">
+    <button id="btn-canta-persistente" class="btn-canta-persistente canta-inactivo" onclick="humanoCanta()">
+      CANTA
+    </button>
+  </div>
+
+  <!-- ── Panel jugador (abajo) ── -->
+  <div id="panel-humano">
+    <div id="mano-humano" class="mano-cartas"></div>
+    <div class="panel-nombre">
+      Tú
+      <span class="puntos-panel"><span id="puntos-humano">0</span> pts</span>
+    </div>
+  </div>
+
+</div><!-- /game-container -->
+
+<!-- Modal fin de mano / partida -->
+<div id="modal">
+  <div class="modal-contenido">
+    <h2 id="modal-titulo"></h2>
+    <p id="modal-texto"></p>
+    <button class="btn-primario" id="modal-btn"></button>
+  </div>
+</div>
+
+<script src="js/audio.js"></script>
+<script src="js/baraja.js"></script>
+<script src="js/reglas.js"></script>
+<script src="js/ia.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+/* cinquillo.css */
+
+/* ─── Layout principal ───────────────────────────── */
+
+#cq-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 6px 8px;
+  padding-top:    max(6px, env(safe-area-inset-top));
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+  gap: 6px;
+}
+
+/* ─── Cabecera ───────────────────────────────────── */
+
+#cq-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 8px;
+  background: rgba(0,0,0,0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.cq-volver {
+  color: var(--dorado);
+  text-decoration: none;
+  font-size: clamp(0.75rem, 3vw, 0.9rem);
+  white-space: nowrap;
+}
+.cq-volver:hover { text-decoration: underline; }
+
+.cq-titulo {
+  font-size: clamp(1.2rem, 5vw, 1.8rem);
+  color: var(--dorado);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+#cq-marcador {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: clamp(0.75rem, 3vw, 0.9rem);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+#cq-meta {
+  opacity: 0.5;
+  font-size: 0.75em;
+}
+
+/* ─── Paneles IA / Jugador ───────────────────────── */
+
+#cq-panel-ia, #cq-panel-humano {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.cq-panel-label {
+  font-size: clamp(0.72rem, 2.5vw, 0.85rem);
+  color: var(--dorado);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.cq-mano {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px;
+}
+
+/* ─── Tablero central ────────────────────────────── */
+
+#cq-tablero {
+  flex: 1;
+  min-height: 0;
+  background:
+    radial-gradient(ellipse at center, #3d9058 0%, var(--verde-mesa) 50%, #1e5030 100%);
+  border-radius: 16px;
+  border: 2px solid rgba(74,158,104,0.55);
+  padding: 10px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 2px 24px rgba(0,0,0,0.35),
+    inset 0 0 60px rgba(0,0,0,0.2),
+    0 4px 20px rgba(0,0,0,0.4);
+}
+
+.cq-board {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Cabecera de columnas */
+.cq-col-headers {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  margin-left: 36px; /* alinear con filas */
+  gap: 2px;
+}
+
+.cq-col-h {
+  text-align: center;
+  font-size: clamp(0.6rem, 2vw, 0.72rem);
+  color: rgba(255,255,255,0.4);
+}
+
+.cq-col-5 {
+  color: var(--dorado);
+  font-weight: bold;
+}
+
+/* Filas */
+.cq-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cq-row-label {
+  width: 32px;
+  min-width: 32px;
+  font-size: clamp(0.62rem, 2vw, 0.75rem);
+  text-align: right;
+  padding-right: 4px;
+  font-style: italic;
+}
+
+.cq-label-oros    { color: #f0b830; }
+.cq-label-copas   { color: #e05050; }
+.cq-label-espadas { color: #a0c0e0; }
+.cq-label-bastos  { color: #80c080; }
+
+.cq-slots {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+  flex: 1;
+}
+
+/* Cada celda del tablero */
+.cq-slot {
+  aspect-ratio: 2/3;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.cq-slot-centro {
+  border-color: rgba(200,168,75,0.4);
+  background: rgba(200,168,75,0.05);
+}
+
+.cq-slot.jugada {
+  background: transparent;
+  border-color: transparent;
+}
+
+.cq-carta-mesa {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+}
+
+/* ─── Cartas de la mano ──────────────────────────── */
+
+/* La mano permite scroll horizontal en vez de hacer wrap */
+.cq-mano {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 3px;
+  padding: 4px 6px;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  /* Ocultar la scrollbar visualmente pero mantener funcionalidad */
+  scrollbar-width: thin;
+  scrollbar-color: var(--verde-borde) transparent;
+  width: 100%;
+  justify-content: flex-start;
+}
+.cq-mano::-webkit-scrollbar { height: 3px; }
+.cq-mano::-webkit-scrollbar-track { background: transparent; }
+.cq-mano::-webkit-scrollbar-thumb { background: var(--verde-borde); border-radius: 2px; }
+
+.cq-carta-mano {
+  width: clamp(40px, 7.5vw, 60px);
+  height: auto;
+  aspect-ratio: 2/3;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  object-fit: cover;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: block;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+.cq-carta-oculta {
+  opacity: 0.85;
+  cursor: default;
+}
+
+.cq-jugable {
+  cursor: pointer;
+  border: 2px solid transparent;
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  .cq-jugable:hover {
+    transform: translateY(-12px) scale(1.06);
+    box-shadow:
+      0 8px 18px rgba(0,0,0,0.6),
+      0 0 16px rgba(200,168,75,0.55);
+    border-color: var(--dorado);
+    position: relative;
+    z-index: 5;
+  }
+}
+
+.cq-jugable:active {
+  transform: translateY(-8px) scale(1.04);
+  border-color: var(--dorado);
+  position: relative;
+  z-index: 5;
+}
+
+.cq-no-legal {
+  cursor: default;
+  filter: brightness(0.45) saturate(0.3);
+}
+
+.cq-mas-cartas {
+  font-size: 0.8rem;
+  color: var(--dorado-claro);
+  align-self: center;
+  margin-left: 4px;
+}
+
+/* ─── Mensaje ────────────────────────────────────── */
+
+.cq-mensaje {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.88);
+  padding: 6px 18px;
+  border-radius: 16px;
+  font-size: clamp(0.8rem, 3vw, 0.95rem);
+  white-space: normal;
+  text-align: center;
+  max-width: 80%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ─── Modal (reutiliza estilos de styles.css) ─────── */
+
+#cq-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+/* ─── Responsive ─────────────────────────────────── */
+
+/* Móvil pequeño (≤ 420px) */
+@media (max-width: 420px) {
+  .cq-carta-mano { width: 36px; }
+
+  .cq-row-label {
+    width: 24px;
+    min-width: 24px;
+    font-size: 0.58rem;
+    padding-right: 2px;
+  }
+
+  .cq-col-headers { margin-left: 28px; }
+  .cq-col-h       { font-size: 0.55rem; }
+
+  .cq-board { gap: 3px; }
+}
+
+/* Móvil medio (≤ 600px) */
+@media (max-width: 600px) {
+  /* El tablero se hace scrollable horizontal si no cabe */
+  #cq-tablero {
+    padding: 8px 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .cq-board {
+    min-width: 320px; /* garantiza que no se aplaste */
+  }
+}
+
+/* Landscape en móvil */
+@media (orientation: landscape) and (max-height: 500px) {
+  #cq-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  #cq-header {
+    width: 100%;
+  }
+
+  #cq-panel-ia {
+    width: 25%;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  #cq-tablero {
+    flex: 1;
+  }
+
+  #cq-panel-humano {
+    width: 25%;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cq-carta-mano { width: 30px; }
+}
