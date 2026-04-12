@@ -405,7 +405,21 @@
 }
 
 /* ─── Panel de apuestas (overlay sobre la mesa) ────── */
-/* Hereda #apuesta-panel de styles.css */
+
+#g4-apuesta-panel {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 22, 14, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 16px;
+  overflow-y: auto;
+}
 
 /* Log de apuestas de los bots */
 .g4-apuesta-log {
