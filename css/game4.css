@@ -279,41 +279,34 @@
   margin-bottom: 0;
 }
 
-/* ─── Baza central en cruz ────────────────────────── */
+/* ─── Baza: cartas apiladas con rotación ─────────── */
 
 #g4-baza-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  position: relative;
+  width:  var(--carta-w);
+  height: var(--carta-h);
   flex-shrink: 0;
 }
 
-.g4-baza-mid-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.g4-baza-centro {
-  width:  var(--carta-w);
-  height: var(--carta-h);
-  border-radius: 6px;
-  border: 1px dashed rgba(255,255,255,0.1);
-}
-
 .g4-baza-slot {
-  width:  var(--carta-w);
-  height: var(--carta-h);
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Rotación y z-index por posición para ver todas las cartas */
+#g4-baza-oeste { transform: rotate(-9deg)  translate(-4px,  3px); z-index: 1; }
+#g4-baza-norte { transform: rotate( 4deg)  translate( 3px, -4px); z-index: 2; }
+#g4-baza-este  { transform: rotate( 8deg)  translate( 4px,  3px); z-index: 3; }
+#g4-baza-sur   { transform: rotate(-3deg)  translate(-2px,  2px); z-index: 4; }
+
 .g4-baza-slot .carta {
   animation: cartaJugada 0.22s ease;
   width:  var(--carta-w);
   height: var(--carta-h);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
 }
 
 /* ─── Triunfo ─────────────────────────────────────── */
@@ -419,6 +412,22 @@
   z-index: 20;
   padding: 16px;
   overflow-y: auto;
+}
+
+/* Triunfo en el panel de apuesta */
+.g4-ap-triunfo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.g4-ap-triunfo-img {
+  width:  52px;
+  height: 80px;
+  border-radius: 5px;
+  border: 2px solid var(--dorado);
+  box-shadow: 0 0 12px rgba(200,168,75,0.4);
+  object-fit: cover;
 }
 
 /* Log de apuestas de los bots */
