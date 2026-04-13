@@ -593,7 +593,7 @@
   }
 }
 
-@media (orientation: landscape) and (max-height: 600px) {
+@media (orientation: landscape) and (max-height: 900px) {
   :root {
     --g4-avatar:        30px;
     --g4-lateral-w:     52px;
