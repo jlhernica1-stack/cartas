@@ -12,10 +12,10 @@ const ORDEN_AP4      = { paso: 0, solo: 1, cuatrola: 2, quintola: 3 };
 const G4 = {
   // Configuración de jugadores (cargada desde sessionStorage)
   jugadores: {
-    sur:   { nombre: 'Jugador',   tipo: 'humano', mano: [] },
-    norte: { nombre: 'Bot Norte', tipo: 'bot',    mano: [] },
-    este:  { nombre: 'Bot Este',  tipo: 'bot',    mano: [] },
-    oeste: { nombre: 'Bot Oeste', tipo: 'bot',    mano: [] },
+    sur:   { nombre: 'Jugador 1', tipo: 'humano', mano: [] },
+    norte: { nombre: 'Jugador 2', tipo: 'bot',    mano: [] },
+    este:  { nombre: 'Jugador 4', tipo: 'bot',    mano: [] },
+    oeste: { nombre: 'Jugador 3', tipo: 'bot',    mano: [] },
   },
 
   // Puntuación de partida por equipo
