@@ -73,8 +73,6 @@
 
     <!-- Sur (tú) -->
     <div class="asiento asiento-sur" data-pos="sur">
-      <span class="asiento-equipo equipo-a-txt">Equipo A</span>
-      <span class="asiento-badge badge-tu">Tú</span>
       <div class="avatar-ring avatar-ring-tu avatar-ring-editable" id="avatar-sur" onclick="togglePicker()">
         <span class="avatar-inicial" id="inicial-sur">J</span>
         <img id="img-avatar-sur" class="avatar-img" src="" alt="" style="display:none">
@@ -82,6 +80,8 @@
       </div>
       <input class="asiento-nombre asiento-nombre-tu" id="nombre-sur" type="text"
              value="Jugador 1" maxlength="12" autocomplete="off">
+      <span class="asiento-badge badge-tu">Tú</span>
+      <span class="asiento-equipo equipo-a-txt">Equipo A</span>
     </div>
 
     <!-- Selector de avatares (aparece al tocar el avatar de Sur) -->
@@ -123,6 +123,8 @@
   ];
 
   let avatarSurIdx = 0;
+  // Rutas relativas de los avatares de los bots (no usar img.src, que devuelve URL absoluta)
+  const botAvatarPaths = {};
 
   // Construir el grid del picker
   const pickerGrid = document.getElementById('picker-grid');
@@ -169,6 +171,7 @@
       [restantes[i], restantes[j]] = [restantes[j], restantes[i]];
     }
     ['norte', 'oeste', 'este'].forEach((pos, i) => {
+      botAvatarPaths[pos] = restantes[i];   // guardar ruta relativa directamente
       const img     = document.getElementById(`img-avatar-${pos}`);
       const inicial = document.getElementById(`inicial-${pos}`);
       if (img) {
@@ -221,18 +224,12 @@
   // ─── Ir a la partida ──────────────────────────────────────────────────────
 
   document.getElementById('btn-jugar').addEventListener('click', () => {
-    // Leer avatares asignados a bots desde los <img>
-    function avatarBot(pos) {
-      const img = document.getElementById(`img-avatar-${pos}`);
-      return img ? img.src.replace(location.origin + '/', '').replace(location.origin, '') : null;
-    }
-
     const config = {
       jugadores: {
         sur:   { nombre: inputSur.value.trim() || 'Jugador 1', tipo: 'humano', avatar: AVATARES[avatarSurIdx] },
-        norte: { nombre: document.getElementById('nombre-norte').value.trim() || 'Jugador 2', tipo: 'bot', avatar: avatarBot('norte') },
-        este:  { nombre: document.getElementById('nombre-este').value.trim()  || 'Jugador 4', tipo: 'bot', avatar: avatarBot('este')  },
-        oeste: { nombre: document.getElementById('nombre-oeste').value.trim() || 'Jugador 3', tipo: 'bot', avatar: avatarBot('oeste') },
+        norte: { nombre: document.getElementById('nombre-norte').value.trim() || 'Jugador 2', tipo: 'bot', avatar: botAvatarPaths['norte'] || null },
+        este:  { nombre: document.getElementById('nombre-este').value.trim()  || 'Jugador 4', tipo: 'bot', avatar: botAvatarPaths['este']  || null },
+        oeste: { nombre: document.getElementById('nombre-oeste').value.trim() || 'Jugador 3', tipo: 'bot', avatar: botAvatarPaths['oeste'] || null },
       }
     };
 
