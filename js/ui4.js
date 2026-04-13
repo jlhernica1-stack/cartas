@@ -201,11 +201,20 @@ function g4ActualizarIndicadorTurno() {
 
 function g4ActualizarNombres() {
   POSICIONES_4.forEach(pos => {
-    const jug     = G4.jugadores[pos];
+    const jug       = G4.jugadores[pos];
     const elNombre  = document.getElementById(`nombre-${pos}`);
     const elInicial = document.getElementById(`inicial-${pos}`);
+    const elImg     = document.getElementById(`img-avatar-${pos}`);
     if (elNombre)  elNombre.textContent  = jug.nombre;
-    if (elInicial) elInicial.textContent = (jug.nombre || pos)[0].toUpperCase();
+    if (jug.avatar && elImg) {
+      elImg.src          = jug.avatar;
+      elImg.style.display = 'block';
+      if (elInicial) elInicial.style.display = 'none';
+    } else {
+      if (elImg)     elImg.style.display     = 'none';
+      if (elInicial) elInicial.style.display = '';
+      if (elInicial) elInicial.textContent   = (jug.nombre || pos)[0].toUpperCase();
+    }
   });
 }
 

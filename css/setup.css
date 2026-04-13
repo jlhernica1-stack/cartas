@@ -235,12 +235,97 @@
   box-shadow: 0 2px 14px rgba(200,168,75,0.22);
 }
 
-/* ── Futura imagen de avatar (añadir con JS) ──────── */
-/* Cuando se añada la imagen:
-   - Mostrar <img> con position: absolute; inset: 0; width/height: 100%; object-fit: cover
-   - Ocultar el <span> con la inicial
-   - Dar cursor: pointer al avatar para abrir el selector de archivo
-*/
+/* ── Imagen de avatar ─────────────────────────────── */
+
+.avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Avatar de Sur: clickable con indicador de edición */
+.avatar-ring-editable {
+  cursor: pointer;
+}
+
+.avatar-edit-hint {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--dorado);
+  border-radius: 50%;
+  font-size: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1a1a;
+  z-index: 2;
+  opacity: 0.9;
+}
+
+/* ─── Picker de avatares ──────────────────────────── */
+
+.avatar-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: rgba(8, 22, 14, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(200,168,75,0.25);
+  border-radius: 16px;
+  padding: 14px 16px;
+  width: 100%;
+  max-width: 400px;
+  animation: fadeInUp 0.2s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.picker-titulo {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--dorado);
+  opacity: 0.8;
+}
+
+.picker-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.picker-avatar {
+  width:  54px;
+  height: 54px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.picker-avatar:hover {
+  border-color: rgba(200,168,75,0.5);
+  transform: scale(1.08);
+}
+
+.picker-avatar-sel {
+  border-color: var(--dorado) !important;
+  box-shadow: 0 0 12px rgba(200,168,75,0.55);
+  transform: scale(1.1);
+}
 
 /* ─── Resumen de equipos ──────────────────────────── */
 

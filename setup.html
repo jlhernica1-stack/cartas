@@ -23,10 +23,10 @@
     <div class="asiento asiento-norte" data-pos="norte">
       <div class="avatar-ring" id="avatar-norte">
         <span class="avatar-inicial" id="inicial-norte">B</span>
-        <!-- AVATAR FUTURO: <img id="img-avatar-norte" src="" alt="" style="display:none"> -->
+        <img id="img-avatar-norte" class="avatar-img" src="" alt="" style="display:none">
       </div>
       <input class="asiento-nombre" id="nombre-norte" type="text"
-             value="Bot Norte" maxlength="12" data-pos="norte" autocomplete="off">
+             value="Jugador 2" maxlength="12" data-pos="norte" autocomplete="off">
       <span class="asiento-badge badge-bot">Bot IA</span>
       <span class="asiento-equipo equipo-a-txt">Equipo A</span>
     </div>
@@ -38,9 +38,10 @@
       <div class="asiento asiento-oeste" data-pos="oeste">
         <div class="avatar-ring" id="avatar-oeste">
           <span class="avatar-inicial" id="inicial-oeste">B</span>
+          <img id="img-avatar-oeste" class="avatar-img" src="" alt="" style="display:none">
         </div>
         <input class="asiento-nombre" id="nombre-oeste" type="text"
-               value="Bot Oeste" maxlength="12" data-pos="oeste" autocomplete="off">
+               value="Jugador 3" maxlength="12" data-pos="oeste" autocomplete="off">
         <span class="asiento-badge badge-bot">Bot IA</span>
         <span class="asiento-equipo equipo-b-txt">Equipo B</span>
       </div>
@@ -60,9 +61,10 @@
       <div class="asiento asiento-este" data-pos="este">
         <div class="avatar-ring" id="avatar-este">
           <span class="avatar-inicial" id="inicial-este">B</span>
+          <img id="img-avatar-este" class="avatar-img" src="" alt="" style="display:none">
         </div>
         <input class="asiento-nombre" id="nombre-este" type="text"
-               value="Bot Este" maxlength="12" data-pos="este" autocomplete="off">
+               value="Jugador 4" maxlength="12" data-pos="este" autocomplete="off">
         <span class="asiento-badge badge-bot">Bot IA</span>
         <span class="asiento-equipo equipo-b-txt">Equipo B</span>
       </div>
@@ -73,14 +75,19 @@
     <div class="asiento asiento-sur" data-pos="sur">
       <span class="asiento-equipo equipo-a-txt">Equipo A</span>
       <span class="asiento-badge badge-tu">Tú</span>
-      <div class="avatar-ring avatar-ring-tu" id="avatar-sur">
+      <div class="avatar-ring avatar-ring-tu avatar-ring-editable" id="avatar-sur" onclick="togglePicker()">
         <span class="avatar-inicial" id="inicial-sur">J</span>
-        <!-- AVATAR FUTURO: <img id="img-avatar-sur" src="" alt="" style="display:none"> -->
-        <!-- AVATAR FUTURO: <label class="avatar-edit-btn" for="input-avatar-sur">✎</label> -->
-        <!-- AVATAR FUTURO: <input type="file" id="input-avatar-sur" accept="image/*" style="display:none"> -->
+        <img id="img-avatar-sur" class="avatar-img" src="" alt="" style="display:none">
+        <span class="avatar-edit-hint">✎</span>
       </div>
       <input class="asiento-nombre asiento-nombre-tu" id="nombre-sur" type="text"
-             value="Jugador" maxlength="12" autocomplete="off">
+             value="Jugador 1" maxlength="12" autocomplete="off">
+    </div>
+
+    <!-- Selector de avatares (aparece al tocar el avatar de Sur) -->
+    <div id="avatar-picker" class="avatar-picker" style="display:none">
+      <p class="picker-titulo">Elige tu avatar</p>
+      <div class="picker-grid" id="picker-grid"></div>
     </div>
 
   </div><!-- /setup-mesa -->
@@ -89,12 +96,12 @@
   <div class="equipos-resumen">
     <div class="equipo-chip equipo-chip-a">
       <span class="equipo-dot dot-a"></span>
-      <span>A: <strong id="label-sur">Jugador</strong> + <strong id="label-norte">Bot Norte</strong></span>
+      <span>A: <strong id="label-sur">Jugador 1</strong> + <strong id="label-norte">Jugador 2</strong></span>
     </div>
     <span class="equipo-vs">vs</span>
     <div class="equipo-chip equipo-chip-b">
       <span class="equipo-dot dot-b"></span>
-      <span>B: <strong id="label-este">Bot Este</strong> + <strong id="label-oeste">Bot Oeste</strong></span>
+      <span>B: <strong id="label-este">Jugador 4</strong> + <strong id="label-oeste">Jugador 3</strong></span>
     </div>
   </div>
 
@@ -104,62 +111,133 @@
 
 <script src="js/audio.js"></script>
 <script>
-  // ─── Actualizar iniciales e icono al escribir ─────────────────────────────
+  // ─── Avatares ─────────────────────────────────────────────────────────────
 
-  function actualizarAvatar(pos, valor) {
-    const el = document.getElementById(`inicial-${pos}`);
-    if (el) el.textContent = (valor || pos[0]).charAt(0).toUpperCase();
+  const AVATARES = [
+    'IMG avatares/Avatar 1.png',
+    'IMG avatares/Avatar 2.png',
+    'IMG avatares/Avatar 3.png',
+    'IMG avatares/Avatar 4.png',
+    'IMG avatares/Avatar 5.png',
+    'IMG avatares/Avatar 6.png',
+  ];
+
+  let avatarSurIdx = 0;
+
+  // Construir el grid del picker
+  const pickerGrid = document.getElementById('picker-grid');
+  AVATARES.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.src       = src;
+    img.className = 'picker-avatar';
+    img.addEventListener('click', () => elegirAvatar(i));
+    pickerGrid.appendChild(img);
+  });
+
+  function togglePicker() {
+    const picker = document.getElementById('avatar-picker');
+    picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
   }
+
+  function elegirAvatar(idx) {
+    avatarSurIdx = idx;
+
+    // Mostrar en el anillo de Sur
+    const img     = document.getElementById('img-avatar-sur');
+    const inicial = document.getElementById('inicial-sur');
+    img.src             = AVATARES[idx];
+    img.style.display   = 'block';
+    inicial.style.display = 'none';
+
+    // Destacar el seleccionado en el picker
+    pickerGrid.querySelectorAll('.picker-avatar').forEach((el, i) => {
+      el.classList.toggle('picker-avatar-sel', i === idx);
+    });
+
+    // Re-asignar bots con los restantes
+    asignarAvataresBots();
+
+    // Cerrar picker
+    document.getElementById('avatar-picker').style.display = 'none';
+  }
+
+  function asignarAvataresBots() {
+    // Mezclar los avatares restantes y asignarlos a los 3 bots
+    const restantes = AVATARES.filter((_, i) => i !== avatarSurIdx);
+    for (let i = restantes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [restantes[i], restantes[j]] = [restantes[j], restantes[i]];
+    }
+    ['norte', 'oeste', 'este'].forEach((pos, i) => {
+      const img     = document.getElementById(`img-avatar-${pos}`);
+      const inicial = document.getElementById(`inicial-${pos}`);
+      if (img) {
+        img.src           = restantes[i];
+        img.style.display = 'block';
+      }
+      if (inicial) inicial.style.display = 'none';
+    });
+  }
+
+  // Asignar avatares al cargar la página
+  asignarAvataresBots();
+  // Mostrar el avatar guardado de Sur (si lo hay)
+  const avatarGuardado = localStorage.getItem('cuatrola-avatar-sur');
+  if (avatarGuardado !== null) {
+    elegirAvatar(parseInt(avatarGuardado, 10));
+  } else {
+    elegirAvatar(0);
+  }
+
+  // ─── Nombres ──────────────────────────────────────────────────────────────
 
   function actualizarLabel(pos, valor) {
     const el = document.getElementById(`label-${pos}`);
-    if (el) el.textContent = valor || `Bot ${pos}`;
+    if (el) el.textContent = valor || `Jugador`;
   }
 
-  // Nombre del jugador (Sur)
   const inputSur = document.getElementById('nombre-sur');
   inputSur.addEventListener('input', () => {
-    actualizarAvatar('sur', inputSur.value);
-    actualizarLabel('sur', inputSur.value || 'Jugador');
+    actualizarLabel('sur', inputSur.value || 'Jugador 1');
   });
 
-  // Nombres de los bots
   ['norte', 'este', 'oeste'].forEach(pos => {
     const input = document.getElementById(`nombre-${pos}`);
-    input.addEventListener('input', () => {
-      actualizarAvatar(pos, input.value);
-      actualizarLabel(pos, input.value);
-    });
+    input.addEventListener('input', () => actualizarLabel(pos, input.value));
   });
 
-  // ─── Guardar en localStorage el nombre del jugador ───────────────────────
-
+  // Restaurar nombre guardado
   const nombreGuardado = localStorage.getItem('cuatrola-nombre-jugador');
   if (nombreGuardado) {
     inputSur.value = nombreGuardado;
-    actualizarAvatar('sur', nombreGuardado);
     actualizarLabel('sur', nombreGuardado);
   }
 
-  // ─── Arrancar audio al primer gesto ──────────────────────────────────────
+  // ─── Audio ────────────────────────────────────────────────────────────────
 
-  document.addEventListener('click', audioGesto, { once: true });
+  document.addEventListener('click',      audioGesto, { once: true });
   document.addEventListener('touchstart', audioGesto, { once: true });
 
-  // ─── Ir a la partida ─────────────────────────────────────────────────────
+  // ─── Ir a la partida ──────────────────────────────────────────────────────
 
   document.getElementById('btn-jugar').addEventListener('click', () => {
+    // Leer avatares asignados a bots desde los <img>
+    function avatarBot(pos) {
+      const img = document.getElementById(`img-avatar-${pos}`);
+      return img ? img.src.replace(location.origin + '/', '').replace(location.origin, '') : null;
+    }
+
     const config = {
       jugadores: {
-        sur:   { nombre: inputSur.value.trim() || 'Jugador', tipo: 'humano' },
-        norte: { nombre: document.getElementById('nombre-norte').value.trim() || 'Bot Norte', tipo: 'bot' },
-        este:  { nombre: document.getElementById('nombre-este').value.trim()  || 'Bot Este',  tipo: 'bot' },
-        oeste: { nombre: document.getElementById('nombre-oeste').value.trim() || 'Bot Oeste', tipo: 'bot' },
+        sur:   { nombre: inputSur.value.trim() || 'Jugador 1', tipo: 'humano', avatar: AVATARES[avatarSurIdx] },
+        norte: { nombre: document.getElementById('nombre-norte').value.trim() || 'Jugador 2', tipo: 'bot', avatar: avatarBot('norte') },
+        este:  { nombre: document.getElementById('nombre-este').value.trim()  || 'Jugador 4', tipo: 'bot', avatar: avatarBot('este')  },
+        oeste: { nombre: document.getElementById('nombre-oeste').value.trim() || 'Jugador 3', tipo: 'bot', avatar: avatarBot('oeste') },
       }
     };
 
-    // Guardar nombre del jugador para próximas partidas
     localStorage.setItem('cuatrola-nombre-jugador', config.jugadores.sur.nombre);
+    localStorage.setItem('cuatrola-avatar-sur', avatarSurIdx);
 
     sessionStorage.setItem('cuatrola4-config', JSON.stringify(config));
     location.href = 'game4.html';

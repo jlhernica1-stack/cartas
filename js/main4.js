@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cfg.jugadores[pos]) {
           G4.jugadores[pos].nombre = cfg.jugadores[pos].nombre || G4.jugadores[pos].nombre;
           G4.jugadores[pos].tipo   = cfg.jugadores[pos].tipo   || G4.jugadores[pos].tipo;
+          G4.jugadores[pos].avatar = cfg.jugadores[pos].avatar || null;
         }
       });
     }
