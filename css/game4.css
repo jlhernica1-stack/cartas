@@ -593,7 +593,7 @@
   }
 }
 
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 600px) {
   :root {
     --g4-avatar:        30px;
     --g4-lateral-w:     52px;
@@ -634,6 +634,11 @@
   /* Ocultar etiqueta de equipo en laterales */
   .g4-panel-lateral .g4-equipo-label {
     display: none;
+  }
+
+  /* Mesa siempre visible */
+  #g4-mesa {
+    min-height: 80px;
   }
 
   /* Baza más pequeña en landscape */
