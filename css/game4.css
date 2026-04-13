@@ -595,19 +595,60 @@
 
 @media (orientation: landscape) and (max-height: 500px) {
   :root {
-    --g4-avatar:    32px;
-    --g4-lateral-w: 56px;
-    --g4-carta-lat: 26px;
-    --g4-carta-lat-h: 40px;
+    --g4-avatar:        30px;
+    --g4-lateral-w:     52px;
+    --g4-carta-lat:     22px;
+    --g4-carta-lat-h:   34px;
+    --g4-carta-norte-w: 30px;
+    --g4-carta-norte-h: 46px;
+    /* Cartas del jugador más pequeñas para que la mesa respire */
+    --carta-w: 44px;
+    --carta-h: 67px;
   }
 
-  #g4-sur .carta, #g4-norte .carta {
-    width:  40px;
-    height: 61px;
+  /* Grid: filas con alturas fijas para que la mesa siempre tenga espacio */
+  #g4-container {
+    grid-template-rows: 54px 1fr 36px 76px;
+    gap: 2px;
+    padding: 3px 4px;
+    padding-top:    max(3px, env(safe-area-inset-top));
+    padding-bottom: max(3px, env(safe-area-inset-bottom));
   }
 
+  /* Norte y Sur: más compactos */
+  #g4-norte, #g4-sur {
+    padding: 3px 6px;
+  }
+
+  /* Canta bar más baja */
+  #g4-cante-bar {
+    padding: 2px 6px;
+  }
+
+  /* Ocultar nombres para ganar espacio */
   #g4-norte .g4-nombre,
   #g4-sur .g4-nombre {
     display: none;
+  }
+
+  /* Ocultar etiqueta de equipo en laterales */
+  .g4-panel-lateral .g4-equipo-label {
+    display: none;
+  }
+
+  /* Baza más pequeña en landscape */
+  #g4-baza-area {
+    width:  100px;
+    height: 120px;
+  }
+
+  .g4-baza-slot {
+    width:  var(--carta-w);
+    height: var(--carta-h);
+  }
+
+  .g4-baza-slot .carta {
+    width:  var(--carta-w);
+    height: var(--carta-h);
   }
 }
