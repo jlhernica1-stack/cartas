@@ -51,6 +51,39 @@ const G4 = {
   bloqueado:   false,
 };
 
+// ─── Persistencia de partida (localStorage) ──────────────────────────────────
+
+const SAVE_KEY = 'cuatrola4-partida';
+
+/** Guarda marcador y repartidor para sobrevivir a un refresco de página */
+function g4GuardarPartida() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      puntosA:    G4.puntosA,
+      puntosB:    G4.puntosB,
+      repartidor: G4.repartidor,
+    }));
+  } catch (_) { /* localStorage no disponible */ }
+}
+
+/** Restaura marcador y repartidor si hay una partida guardada. Devuelve true si se restauró. */
+function g4CargarPartida() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    G4.puntosA    = s.puntosA    ?? 0;
+    G4.puntosB    = s.puntosB    ?? 0;
+    G4.repartidor = s.repartidor ?? 'oeste';
+    return true;
+  } catch (_) { return false; }
+}
+
+/** Borra el guardado (al terminar la partida y empezar una nueva) */
+function g4LimpiarPartida() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (_) {}
+}
+
 // ─── Arranque ─────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -68,7 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } catch (_) { /* sessionStorage vacío o inválido: usa defaults */ }
 
+  // Restaurar partida en curso si existe (refresco de página)
+  const restaurado = g4CargarPartida();
+
   g4ActualizarNombres();
+  if (restaurado) {
+    g4Mensaje('Partida recuperada — nueva mano', 'info');
+  }
   iniciarMano4();
 });
 
@@ -88,6 +127,7 @@ function g4OrdenBazaActual(primero) {
 }
 
 function iniciarMano4() {
+  g4GuardarPartida();   // persiste marcador + repartidor antes de cada mano
   G4.bloqueado        = true;
   G4.parSentado       = null;
   G4.bazaActual       = [];
@@ -185,6 +225,10 @@ function g4CerrarApuesta(mejorTipo, mejorEquipo, mejorJugador) {
     G4.parSentado = g4GetCompanero(mejorJugador);   // compañero no juega
     // Actualizar orden de turno sin el parSentado
     G4.ordenTurno = g4OrdenBazaActual(G4.turno);
+    // Si quien tenía el turno es el que se sienta, ceder el turno al primero del orden
+    if (G4.turno === G4.parSentado && G4.ordenTurno.length > 0) {
+      G4.turno = G4.ordenTurno[0];
+    }
 
     const quien = G4.jugadores[mejorJugador].nombre;
     const comp  = G4.jugadores[G4.parSentado].nombre;
@@ -359,7 +403,7 @@ function g4FinalizarBaza() {
     g4Mensaje(`${G4.jugadores[posGanador].nombre} gana la baza (Equipo B)`, 'malo');
   }
 
-  g4RenderPuntosMano();
+  g4RenderMarcador();   // actualiza bazas en el marcador superior
 
   setTimeout(() => {
     G4.bazaActual = [];
@@ -478,6 +522,7 @@ function g4FinalizarPartida() {
 
   g4Modal(titulo, cuerpo, 'Nueva partida', () => {
     g4OcultarModal();
+    g4LimpiarPartida();   // borra el guardado al empezar partida nueva
     G4.puntosA = 0;
     G4.puntosB = 0;
     const idxR = POSICIONES_4.indexOf(G4.repartidor);

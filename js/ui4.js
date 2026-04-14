@@ -110,10 +110,23 @@ function g4RenderPintaBar(_triunfo) {
 // ─── Marcador ─────────────────────────────────────────────────────────────────
 
 function g4RenderMarcador() {
-  const elA = document.getElementById('pts-equipo-a');
-  const elB = document.getElementById('pts-equipo-b');
-  if (elA) elA.textContent = G4.puntosA;
-  if (elB) elB.textContent = G4.puntosB;
+  const elA    = document.getElementById('pts-equipo-a');
+  const elB    = document.getElementById('pts-equipo-b');
+  const elMeta = document.querySelector('.g4-marcador-meta');
+
+  const enMano = (G4.bazasA + G4.bazasB) > 0;
+
+  if (enMano) {
+    // Durante la mano: mostrar bazas ganadas
+    if (elA)    elA.textContent    = G4.bazasA;
+    if (elB)    elB.textContent    = G4.bazasB;
+    if (elMeta) elMeta.textContent = '/5';
+  } else {
+    // Entre manos: mostrar puntos de partida
+    if (elA)    elA.textContent    = G4.puntosA;
+    if (elB)    elB.textContent    = G4.puntosB;
+    if (elMeta) elMeta.textContent = '/21';
+  }
 }
 
 function g4RenderPuntosMano() {
@@ -139,9 +152,9 @@ function g4RenderContrato(contrato) {
     return;
   }
 
-  const iconos = { paso: '·', cuatrola: '◆◆◆◆', quintola: '◆◆◆◆◆' };
+  const iconos = { paso: '·', solo: '◆', cuatrola: '◆◆◆◆', quintola: '◆◆◆◆◆' };
   const quien  = contrato.equipo ? `Equipo ${contrato.equipo}` : '—';
-  el.textContent = `${iconos[contrato.tipo]} ${contrato.tipo.toUpperCase()} (${quien}) · ${contrato.valor} pt`;
+  el.textContent = `${iconos[contrato.tipo] ?? '◆'} ${contrato.tipo.toUpperCase()} (${quien}) · ${contrato.valor} pt`;
   el.className   = `contrato-info contrato-${contrato.tipo}`;
 }
 
