@@ -4,6 +4,20 @@
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
 const META4          = 21;
+
+/**
+ * Devuelve true si está permitido cantar en este momento:
+ * - Se debe estar al inicio de una baza (bazaActual vacía)
+ * - Debe haberse jugado al menos una baza (no se puede cantar en la primera salida)
+ * - No puede haber contrato de Cuatrola o Quintola en juego
+ */
+function g4PuedeCantar() {
+  if (G4.bazaActual.length !== 0) return false;
+  if ((G4.bazasA + G4.bazasB) === 0) return false;  // primera salida: prohibido
+  const c = G4.contrato;
+  if (c && (c.tipo === 'cuatrola' || c.tipo === 'quintola')) return false;
+  return true;
+}
 const VALOR_AP4      = { paso: 1, solo: 2, cuatrola: 4, quintola: 5 };
 const ORDEN_AP4      = { paso: 0, solo: 1, cuatrola: 2, quintola: 3 };
 
@@ -275,18 +289,17 @@ function g4TurnoBot() {
   const jug = G4.jugadores[pos];
 
   // ¿Puede cantar al salir?
-  if (G4.bazaActual.length === 0) {
+  if (g4PuedeCantar()) {
     const cantes = detectarCantesJugador(jug.mano, G4.triunfo, G4.cantesDeclarados[pos]);
     if (cantes.length > 0) {
-      cantes.forEach(c => {
-        G4.cantesDeclarados[pos].add(c.palo);
-        if (EQUIPOS_4[pos] === 'A') G4.cantesA += c.puntos;
-        else                        G4.cantesB += c.puntos;
-      });
+      // Solo declara el primero (40 antes que 20 — ya ordenados)
+      const c = cantes[0];
+      G4.cantesDeclarados[pos].add(c.palo);
+      if (EQUIPOS_4[pos] === 'A') G4.cantesA += c.puntos;
+      else                        G4.cantesB += c.puntos;
 
-      const txt   = cantes.map(c => c.texto).join(' · ');
       const esEquA = EQUIPOS_4[pos] === 'A';
-      g4Mensaje(`${jug.nombre} canta: ${txt}`, esEquA ? 'exito' : 'malo');
+      g4Mensaje(`${jug.nombre} canta: ${c.texto}`, esEquA ? 'exito' : 'malo');
       g4RenderPuntosMano();
 
       setTimeout(g4EjecutarJugadaBot, 950);
@@ -354,29 +367,29 @@ function g4JugarCartaEnPosicion(pos, carta) {
 // ─── Cante del humano ─────────────────────────────────────────────────────────
 
 function g4HumanoCanta() {
-  if (G4.bloqueado || G4.turno !== 'sur' || G4.bazaActual.length !== 0) return;
+  if (G4.bloqueado || G4.turno !== 'sur' || !g4PuedeCantar()) return;
 
   const cantes = detectarCantesJugador(
     G4.jugadores.sur.mano, G4.triunfo, G4.cantesDeclarados.sur
   );
   if (cantes.length === 0) return;
 
-  cantes.forEach(c => {
-    G4.cantesA += c.puntos;
-    G4.cantesDeclarados.sur.add(c.palo);
-  });
+  // Solo declara el primero (40 antes que 20 — ya ordenados)
+  const c = cantes[0];
+  G4.cantesA += c.puntos;
+  G4.cantesDeclarados.sur.add(c.palo);
 
-  const texto = cantes.map(c => c.texto).join(' · ');
-  g4Mensaje(`¡Cantas ${texto}!`, 'exito');
+  g4Mensaje(`¡Cantas ${c.texto}!`, 'exito');
   g4RenderPuntosMano();
   g4ActualizarBotonCante();
 }
 
 function g4ActualizarBotonCante() {
-  const cantes = G4.bazaActual.length === 0 && G4.turno === 'sur' && !G4.bloqueado
+  const cantes = G4.turno === 'sur' && !G4.bloqueado && g4PuedeCantar()
     ? detectarCantesJugador(G4.jugadores.sur.mano, G4.triunfo, G4.cantesDeclarados.sur)
     : [];
-  g4RenderBotonCante(cantes.length > 0);
+  // Pasa el primer cante disponible (ya ordenados: 40 antes que 20) o null
+  g4RenderBotonCante(cantes[0] ?? null);
 }
 
 // ─── Finalizar baza ───────────────────────────────────────────────────────────

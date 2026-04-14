@@ -175,13 +175,19 @@ function g4OcultarMensaje() {
 
 // ─── Botón CANTA ─────────────────────────────────────────────────────────────
 
-function g4RenderBotonCante(activo) {
+/**
+ * Actualiza el botón CANTA con la etiqueta del cante disponible.
+ * @param {object|null} cante  - El cante a declarar ({ puntos, palo }) o null si no hay
+ */
+function g4RenderBotonCante(cante) {
   const btn = document.getElementById('g4-btn-canta');
   if (!btn) return;
-  if (activo) {
+  if (cante) {
+    btn.textContent = cante.puntos === 40 ? 'CANTA 40' : `CANTA 20 ${cante.palo}`;
     btn.classList.add('canta-activo');
     btn.classList.remove('canta-inactivo');
   } else {
+    btn.textContent = 'CANTA';
     btn.classList.add('canta-inactivo');
     btn.classList.remove('canta-activo');
   }

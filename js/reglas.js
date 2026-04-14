@@ -80,7 +80,8 @@ function detectarCantesDisponibles(mano, triunfo, yaDeclarados) {
       cantes.push({ palo, puntos, texto: `¡${puntos} de ${palo}!` });
     }
   }
-  return cantes;
+  // Las 40 siempre antes que las 20
+  return cantes.sort((a, b) => b.puntos - a.puntos);
 }
 
 // Calcula puntos de card values ganados + 10 extra por última baza + cantes
